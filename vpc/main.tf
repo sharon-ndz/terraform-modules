@@ -208,12 +208,12 @@ resource "aws_route_table_association" "private_app_sunets_rt_association" {
 
 resource "aws_route_table_association" "private_data_sunets_rt_association" {
   count          = length(var.private_data_subnets["cidrs_blocks"])
-  route_table_id = element(aws_route_table.private_data_subnets.*.id, count.index)
+  route_table_id = element(aws_route_table.private_data_subnets_rt.*.id, count.index)
   subnet_id      = element(aws_subnet.private_data_subnets.*.id, count.index)
 }
 
 resource "aws_route_table_association" "private_services_sunets_rt_association" {
   count          = length(var.private_services_subnets["cidrs_blocks"])
-  route_table_id = element(aws_route_table.private_services_subnets.*.id, count.index)
+  route_table_id = element(aws_route_table.private_services_subnets_rt.*.id, count.index)
   subnet_id      = element(aws_subnet.private_services_subnets.*.id, count.index)
 }
