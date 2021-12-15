@@ -10,6 +10,7 @@ resource "aws_vpc" "vpc" {
 
 #CREATING A INTERNET GATEWAY
 resource "aws_internet_gateway" "igw" {
+  count  = var.create_igw
   vpc_id = aws_vpc.vpc.id
 
   tags = merge({ Name = var.internet_gateway_name }, var.common_tags)
@@ -67,7 +68,7 @@ resource "aws_route_table_association" "public_association" {
 resource "aws_subnet" "private_subnets" {
   count               = length(var.private_subnets["cidrs_blocks"])
 
-  vpc_id              = aws_vpc.vpc.id
+  vpc_id              = var.vpc_id
   availability_zone   = element(data.aws_availability_zones.azs.names, count.index)
   cidr_block          = element(var.private_subnets["cidrs_blocks"], count.index)
 
@@ -84,7 +85,7 @@ resource "aws_eip" "eip_ngw" {
 resource "aws_nat_gateway" "ngw" {
   count         = var.total_nat_gateway_required
   allocation_id = element(aws_eip.eip_ngw.*.id, count.index)
-  subnet_id     = element(aws_subnet.public_subnets.*.id, count.index)
+  subnet_id     = element(var.pulic_subnets_ids, count.index)
 
   tags = merge({ Name = "${var.nat_gateway_name}_${count.index + 1}" }, var.common_tags)
 }
