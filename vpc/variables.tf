@@ -52,9 +52,6 @@ variable "private_subnets" {
 }
 
 ###Public Subnets###
-variable "map_public_ip_on_launch" {
-  type = bool
-}
 variable "public_subnets" {
   type = object({
     routes                   = list
