@@ -140,6 +140,8 @@ resource "aws_route_table" "private_app_sunets_rt" {
 }
 
 resource "aws_route_table" "private_data_subnets_rt" {
+  count  = length(aws_nat_gateway.ngw)
+
   vpc_id   = aws_vpc.vpc.id
 
   route {
@@ -164,10 +166,12 @@ resource "aws_route_table" "private_data_subnets_rt" {
     }
   }
 
-  tags = merge({ Name = lookup(var.private_subnets, "route_table_name", "") }, var.common_tags)
+  tags = merge({ Name = lookup(var.private_data_subnets, "route_table_name", "") }, var.common_tags)
 }
 
 resource "aws_route_table" "private_services_subnets_rt" {
+  count  = length(aws_nat_gateway.ngw)
+
   vpc_id   = aws_vpc.vpc.id
 
   route {
@@ -192,24 +196,24 @@ resource "aws_route_table" "private_services_subnets_rt" {
     }
   }
 
-  tags = merge({ Name = lookup(var.private_subnets, "route_table_name", "") }, var.common_tags)
+  tags = merge({ Name = lookup(var.private_services_subnets, "route_table_name", "") }, var.common_tags)
 }
 
 #ASSOCIATE/LINK PRIVATE_ROUTES WITH PRIVATE_SUBNETS
 resource "aws_route_table_association" "private_app_sunets_rt_association" {
-  count          = length(var.private_subnets["cidrs_blocks"])
+  count          = length(var.private_app_subnets["cidrs_blocks"])
   route_table_id = element(aws_route_table.private_app_sunets_rt.*.id, count.index)
   subnet_id      = element(aws_subnet.private_app_subnets.*.id, count.index)
 }
 
 resource "aws_route_table_association" "private_data_sunets_rt_association" {
-  count          = length(var.private_subnets["cidrs_blocks"])
-  route_table_id = aws_route_table.private_data_subnets_rt.id
+  count          = length(var.private_data_subnets["cidrs_blocks"])
+  route_table_id = element(aws_route_table.private_data_subnets.*.id, count.index)
   subnet_id      = element(aws_subnet.private_data_subnets.*.id, count.index)
 }
 
 resource "aws_route_table_association" "private_services_sunets_rt_association" {
-  count          = length(var.private_subnets["cidrs_blocks"])
-  route_table_id = aws_route_table.private_services_subnets_rt.id
+  count          = length(var.private_services_subnets["cidrs_blocks"])
+  route_table_id = element(aws_route_table.private_services_subnets.*.id, count.index)
   subnet_id      = element(aws_subnet.private_services_subnets.*.id, count.index)
 }
