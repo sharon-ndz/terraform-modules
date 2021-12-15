@@ -44,7 +44,7 @@ variable "nat_gateway_name" {
 ###Private Subnets###
 variable "private_app_subnets" {
   type = object({
-    routes                   = list
+    routes                   = list(any)
     cidrs_blocks             = list(string)
     subnets_name_prefix      = string
     route_table_name         = string
@@ -54,7 +54,7 @@ variable "private_app_subnets" {
 ##Private Data Subnets
 variable "private_data_subnets" {
   type = object({
-    routes                   = list
+    routes                   = list(any)
     cidrs_blocks             = list(string)
     subnets_name_prefix      = string
     route_table_name         = string
@@ -64,7 +64,7 @@ variable "private_data_subnets" {
 ##Private Services Subnets
 variable "private_services_subnets" {
   type = object({
-    routes                   = list
+    routes                   = list(any)
     cidrs_blocks             = list(string)
     subnets_name_prefix      = string
     route_table_name         = string
@@ -74,7 +74,7 @@ variable "private_services_subnets" {
 ###Public Subnets###
 variable "public_subnets" {
   type = object({
-    routes                   = list
+    routes                   = list(any)
     cidrs_blocks             = list(string)
     subnets_name_prefix      = string
     map_public_ip_on_launch  = bool
