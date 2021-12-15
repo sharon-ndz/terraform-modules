@@ -6,18 +6,6 @@ variable "region" {
 variable "common_tags" {
   type = map
 }
-variable "create_subnets_only" {
-    type = bool
-    default = false
-}
-variable "create_igw" {
-    type = bool
-    default = true
-}
-variable "vpc_id" {
-    type = string
-    default = ""
-}
 
 ###VPC###
 variable "instance_tenancy" {
@@ -60,13 +48,31 @@ variable "nat_gateway_name" {
   type = string
   default = ""
 }
-variable "pulic_subnets_ids" {
-    type = list(string)
-    default = []
-}
 
 ###Private Subnets###
-variable "private_subnets" {
+variable "private_app_subnets" {
+  type = object({
+    routes                   = list
+    cidrs_blocks             = list(string)
+    subnets_name_prefix      = string
+    route_table_name         = string
+  })
+  default = {}
+}
+
+##Private Data Subnets
+variable "private_data_subnets" {
+  type = object({
+    routes                   = list
+    cidrs_blocks             = list(string)
+    subnets_name_prefix      = string
+    route_table_name         = string
+  })
+  default = {}
+}
+
+##Private Services Subnets
+variable "private_services_subnets" {
   type = object({
     routes                   = list
     cidrs_blocks             = list(string)

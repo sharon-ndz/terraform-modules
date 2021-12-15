@@ -1,5 +1,4 @@
 resource "aws_vpc" "vpc" {
-  count                = var.create_subnets_only ? 0 : 1
   cidr_block           = var.vpc_cidr
   instance_tenancy     = var.instance_tenancy
   enable_dns_support   = var.enable_dns_support
@@ -10,7 +9,6 @@ resource "aws_vpc" "vpc" {
 
 #CREATING A INTERNET GATEWAY
 resource "aws_internet_gateway" "igw" {
-  count  = var.create_igw
   vpc_id = aws_vpc.vpc.id
 
   tags = merge({ Name = var.internet_gateway_name }, var.common_tags)
@@ -65,14 +63,34 @@ resource "aws_route_table_association" "public_association" {
 }
 
 #CREATING PRIVATE SUBNETS FROM A LIST
-resource "aws_subnet" "private_subnets" {
-  count               = length(var.private_subnets["cidrs_blocks"])
+resource "aws_subnet" "private_app_subnets" {
+  count               = length(var.private_app_subnets["cidrs_blocks"])
 
-  vpc_id              = var.vpc_id
+  vpc_id              = aws_vpc.vpc.id
   availability_zone   = element(data.aws_availability_zones.azs.names, count.index)
-  cidr_block          = element(var.private_subnets["cidrs_blocks"], count.index)
+  cidr_block          = element(var.private_app_subnets["cidrs_blocks"], count.index)
 
-  tags = merge({ Name = "${lookup(var.private_subnets, "subnets_name_prefix", "")}_${count.index + 1}" }, var.common_tags)
+  tags = merge({ Name = "${lookup(var.private_app_subnets, "subnets_name_prefix", "")}_${count.index + 1}" }, var.common_tags)
+}
+
+resource "aws_subnet" "private_data_subnets" {
+  count               = length(var.private_data_subnets["cidrs_blocks"])
+
+  vpc_id              = aws_vpc.vpc.id
+  availability_zone   = element(data.aws_availability_zones.azs.names, count.index)
+  cidr_block          = element(var.private_data_subnets["cidrs_blocks"], count.index)
+
+  tags = merge({ Name = "${lookup(var.private_data_subnets, "subnets_name_prefix", "")}_${count.index + 1}" }, var.common_tags)
+}
+
+resource "aws_subnet" "private_services_subnets" {
+  count               = length(var.private_services_subnets["cidrs_blocks"])
+
+  vpc_id              = aws_vpc.vpc.id
+  availability_zone   = element(data.aws_availability_zones.azs.names, count.index)
+  cidr_block          = element(var.private_services_subnets["cidrs_blocks"], count.index)
+
+  tags = merge({ Name = "${lookup(var.private_services_subnets, "subnets_name_prefix", "")}_${count.index + 1}" }, var.common_tags)
 }
 
 #CREATING EIP NAT_GATEWAY FOR NAT_GATEWAY REDUNDANCY
@@ -91,7 +109,7 @@ resource "aws_nat_gateway" "ngw" {
 }
 
 #CREATING A PRIAVTE ROUTE_TABLE FOR PRIVATE_SUBNETS
-resource "aws_route_table" "private_routes" {
+resource "aws_route_table" "private_app_sunets_rt" {
   count  = length(aws_nat_gateway.ngw)
 
   vpc_id   = aws_vpc.vpc.id
@@ -102,7 +120,63 @@ resource "aws_route_table" "private_routes" {
   }
 
   dynamic "route" {
-    for_each = lookup(var.private_subnets, "routes", [])
+    for_each = lookup(var.private_app_subnets, "routes", [])
+    content {
+      cidr_block                = lookup(route.value, "cidr_block", "")
+      egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", "")
+      gateway_id                = lookup(route.value, "gateway_id", "")
+      instance_id               = lookup(route.value, "instance_id", "")
+      ipv6_cidr_block           = lookup(route.value, "ipv6_cidr_block", "")
+      local_gateway_id          = lookup(route.value, "local_gateway_id", "")
+      nat_gateway_id            = lookup(route.value, "nat_gateway_id", "")
+      network_interface_id      = lookup(route.value, "network_interface_id", "")
+      transit_gateway_id        = lookup(route.value, "transit_gateway_id", "")
+      vpc_endpoint_id           = lookup(route.value, "vpc_endpoint_id", "")
+      vpc_peering_connection_id = lookup(route.value, "vpc_peering_connection_id", "")
+    }
+  }
+
+  tags = merge({ Name = lookup(var.private_app_subnets, "route_table_name", "") }, var.common_tags)
+}
+
+resource "aws_route_table" "private_data_subnets_rt" {
+  vpc_id   = aws_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = element(aws_nat_gateway.ngw.*.id, count.index)
+  }
+
+  dynamic "route" {
+    for_each = lookup(var.private_data_subnets, "routes", [])
+    content {
+      cidr_block                = lookup(route.value, "cidr_block", "")
+      egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", "")
+      gateway_id                = lookup(route.value, "gateway_id", "")
+      instance_id               = lookup(route.value, "instance_id", "")
+      ipv6_cidr_block           = lookup(route.value, "ipv6_cidr_block", "")
+      local_gateway_id          = lookup(route.value, "local_gateway_id", "")
+      nat_gateway_id            = lookup(route.value, "nat_gateway_id", "")
+      network_interface_id      = lookup(route.value, "network_interface_id", "")
+      transit_gateway_id        = lookup(route.value, "transit_gateway_id", "")
+      vpc_endpoint_id           = lookup(route.value, "vpc_endpoint_id", "")
+      vpc_peering_connection_id = lookup(route.value, "vpc_peering_connection_id", "")
+    }
+  }
+
+  tags = merge({ Name = lookup(var.private_subnets, "route_table_name", "") }, var.common_tags)
+}
+
+resource "aws_route_table" "private_services_subnets_rt" {
+  vpc_id   = aws_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = element(aws_nat_gateway.ngw.*.id, count.index)
+  }
+
+  dynamic "route" {
+    for_each = lookup(var.private_services_subnets, "routes", [])
     content {
       cidr_block                = lookup(route.value, "cidr_block", "")
       egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", "")
@@ -122,8 +196,20 @@ resource "aws_route_table" "private_routes" {
 }
 
 #ASSOCIATE/LINK PRIVATE_ROUTES WITH PRIVATE_SUBNETS
-resource "aws_route_table_association" "private_routes_linking" {
+resource "aws_route_table_association" "private_app_sunets_rt_association" {
   count          = length(var.private_subnets["cidrs_blocks"])
-  route_table_id = element(aws_route_table.private_routes.*.id, count.index)
-  subnet_id      = element(aws_subnet.private_subnets_adb.*.id, count.index)
+  route_table_id = element(aws_route_table.private_app_sunets_rt.*.id, count.index)
+  subnet_id      = element(aws_subnet.private_app_subnets.*.id, count.index)
+}
+
+resource "aws_route_table_association" "private_data_sunets_rt_association" {
+  count          = length(var.private_subnets["cidrs_blocks"])
+  route_table_id = aws_route_table.private_data_subnets_rt.id
+  subnet_id      = element(aws_subnet.private_data_subnets.*.id, count.index)
+}
+
+resource "aws_route_table_association" "private_services_sunets_rt_association" {
+  count          = length(var.private_subnets["cidrs_blocks"])
+  route_table_id = aws_route_table.private_services_subnets_rt.id
+  subnet_id      = element(aws_subnet.private_services_subnets.*.id, count.index)
 }
