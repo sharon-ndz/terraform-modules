@@ -6,6 +6,9 @@ variable "region" {
 variable "common_tags" {
   type = map
 }
+variable "create_subnets_only" {
+    type = bool
+}
 
 ###VPC###
 variable "instance_tenancy" {

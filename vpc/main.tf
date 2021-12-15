@@ -1,4 +1,5 @@
 resource "aws_vpc" "vpc" {
+  count                = var.create_subnets_only ? 0 : 1
   cidr_block           = var.vpc_cidr
   instance_tenancy     = var.instance_tenancy
   enable_dns_support   = var.enable_dns_support
