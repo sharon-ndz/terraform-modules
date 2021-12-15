@@ -103,7 +103,7 @@ resource "aws_eip" "eip_ngw" {
 resource "aws_nat_gateway" "ngw" {
   count         = var.total_nat_gateway_required
   allocation_id = element(aws_eip.eip_ngw.*.id, count.index)
-  subnet_id     = element(var.pulic_subnets_ids, count.index)
+  subnet_id     = element(aws_subnet.public_subnets.*.id, count.index)
 
   tags = merge({ Name = "${var.nat_gateway_name}_${count.index + 1}" }, var.common_tags)
 }
