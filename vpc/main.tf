@@ -115,8 +115,8 @@ resource "aws_route_table" "private_app_sunets_rt" {
   vpc_id   = aws_vpc.vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = element(aws_nat_gateway.ngw.*.id, count.index)
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = element(aws_nat_gateway.ngw.*.id, count.index)
   }
 
   dynamic "route" {
@@ -145,8 +145,8 @@ resource "aws_route_table" "private_data_subnets_rt" {
   vpc_id   = aws_vpc.vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = element(aws_nat_gateway.ngw.*.id, count.index)
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = element(aws_nat_gateway.ngw.*.id, count.index)
   }
 
   dynamic "route" {
@@ -175,8 +175,8 @@ resource "aws_route_table" "private_services_subnets_rt" {
   vpc_id   = aws_vpc.vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = element(aws_nat_gateway.ngw.*.id, count.index)
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = element(aws_nat_gateway.ngw.*.id, count.index)
   }
 
   dynamic "route" {
