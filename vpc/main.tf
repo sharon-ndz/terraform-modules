@@ -96,7 +96,7 @@ resource "aws_subnet" "private_services_subnets" {
 #CREATING EIP NAT_GATEWAY FOR NAT_GATEWAY REDUNDANCY
 resource "aws_eip" "eip_ngw" {
   count = var.total_nat_gateway_required
-  tags  = merge({ Name = "${var.eip_for_nat_gateway_name}_${count.index + 1}" }, var.common_tags)
+  tags  = merge({ Name = "${var.eip_for_nat_gateway_name}-${count.index + 1}" }, var.common_tags)
 }
 
 #CREATING NAT GATEWAYS IN PUBLIC_SUBNETS, EACH NAT_GATEWAY WILL BE DIFFERENT AZ FOR REDUNDANCY.
@@ -105,7 +105,7 @@ resource "aws_nat_gateway" "ngw" {
   allocation_id = element(aws_eip.eip_ngw.*.id, count.index)
   subnet_id     = element(aws_subnet.public_subnets.*.id, count.index)
 
-  tags = merge({ Name = "${var.nat_gateway_name}_${count.index + 1}" }, var.common_tags)
+  tags = merge({ Name = "${var.nat_gateway_name}-${count.index + 1}" }, var.common_tags)
 }
 
 #CREATING A PRIAVTE ROUTE_TABLE FOR PRIVATE_SUBNETS
@@ -146,7 +146,8 @@ resource "aws_route_table" "private_data_subnets_rt" {
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = element(aws_nat_gateway.ngw.*.id, count.index)
+    gateway_id     = is_public ? aws_internet_gateway.igw.id : null
+    nat_gateway_id = is_public ? element(aws_nat_gateway.ngw.*.id, count.index) : null
   }
 
   dynamic "route" {

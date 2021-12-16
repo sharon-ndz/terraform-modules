@@ -58,6 +58,7 @@ variable "private_data_subnets" {
     cidrs_blocks             = list(string)
     subnets_name_prefix      = string
     route_table_name         = string
+    is_public                = bool
   })
 }
 
