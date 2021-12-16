@@ -147,7 +147,7 @@ resource "aws_route_table" "private_data_subnets_rt" {
   route {
     cidr_block     = "0.0.0.0/0"
     gateway_id     = lookup(var.private_data_subnets, "is_public", "") ? aws_internet_gateway.igw.id : null
-    nat_gateway_id = lookup(var.private_data_subnets, "is_public", "") ? element(aws_nat_gateway.ngw.*.id, count.index) : null
+    nat_gateway_id = lookup(var.private_data_subnets, "is_public", "") ? null : element(aws_nat_gateway.ngw.*.id, count.index)
   }
 
   dynamic "route" {
