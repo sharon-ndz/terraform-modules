@@ -23,7 +23,7 @@ resource "aws_subnet" "public_subnets" {
   cidr_block                = element(var.public_subnets["cidrs_blocks"], count.index)
   map_public_ip_on_launch   = lookup(var.public_subnets, "map_public_ip_on_launch", true)
 
-  tags = merge({ Name = "${lookup(var.public_subnets, "subnets_name_prefix", "")}_${count.index + 1}" }, var.common_tags)
+  tags = merge({ Name = "${lookup(var.public_subnets, "subnets_name_prefix", "")}-az${substr(element(data.aws_availability_zones.azs.names, count.index), length(element(data.aws_availability_zones.azs.names, count.index)) - 1, length(element(data.aws_availability_zones.azs.names, count.index)))}-subnet" }, var.common_tags)
 }
 
 #CREATING A PUBLIC ROUTES
@@ -52,7 +52,7 @@ resource "aws_route_table" "public_routes" {
     }
   }
 
-  tags = merge({ Name = lookup(var.public_subnets, "route_table_name", "") }, var.common_tags)
+  tags = merge({ Name = "${lookup(var.public_subnets, "route_table_name", "")}-rt" }, var.common_tags)
 }
 
 #ASSOCIATE/LINK PUBLIC_ROUTE WITH PUBLIC_SUBNETS LIST
@@ -70,7 +70,7 @@ resource "aws_subnet" "private_app_subnets" {
   availability_zone   = element(data.aws_availability_zones.azs.names, count.index)
   cidr_block          = element(var.private_app_subnets["cidrs_blocks"], count.index)
 
-  tags = merge({ Name = "${lookup(var.private_app_subnets, "subnets_name_prefix", "")}_${count.index + 1}" }, var.common_tags)
+  tags = merge({ Name = "${lookup(var.private_app_subnets, "subnets_name_prefix", "")}-az${substr(element(data.aws_availability_zones.azs.names, count.index), length(element(data.aws_availability_zones.azs.names, count.index)) - 1, length(element(data.aws_availability_zones.azs.names, count.index)))}-subnet" }, var.common_tags)
 }
 
 resource "aws_subnet" "private_data_subnets" {
@@ -80,7 +80,7 @@ resource "aws_subnet" "private_data_subnets" {
   availability_zone   = element(data.aws_availability_zones.azs.names, count.index)
   cidr_block          = element(var.private_data_subnets["cidrs_blocks"], count.index)
 
-  tags = merge({ Name = "${lookup(var.private_data_subnets, "subnets_name_prefix", "")}_${count.index + 1}" }, var.common_tags)
+  tags = merge({ Name = "${lookup(var.private_data_subnets, "subnets_name_prefix", "")}-az${substr(element(data.aws_availability_zones.azs.names, count.index), length(element(data.aws_availability_zones.azs.names, count.index)) - 1, length(element(data.aws_availability_zones.azs.names, count.index)))}-subnet" }, var.common_tags)
 }
 
 resource "aws_subnet" "private_services_subnets" {
@@ -90,7 +90,7 @@ resource "aws_subnet" "private_services_subnets" {
   availability_zone   = element(data.aws_availability_zones.azs.names, count.index)
   cidr_block          = element(var.private_services_subnets["cidrs_blocks"], count.index)
 
-  tags = merge({ Name = "${lookup(var.private_services_subnets, "subnets_name_prefix", "")}_${count.index + 1}" }, var.common_tags)
+  tags = merge({ Name = "${lookup(var.private_services_subnets, "subnets_name_prefix", "")}-az${substr(element(data.aws_availability_zones.azs.names, count.index), length(element(data.aws_availability_zones.azs.names, count.index)) - 1, length(element(data.aws_availability_zones.azs.names, count.index)))}-subnet" }, var.common_tags)
 }
 
 #CREATING EIP NAT_GATEWAY FOR NAT_GATEWAY REDUNDANCY
@@ -136,7 +136,7 @@ resource "aws_route_table" "private_app_sunets_rt" {
     }
   }
 
-  tags = merge({ Name = lookup(var.private_app_subnets, "route_table_name", "") }, var.common_tags)
+  tags = merge({ Name = "${lookup(var.private_app_subnets, "route_table_name", "")}-az${substr(element(data.aws_availability_zones.azs.names, count.index), length(element(data.aws_availability_zones.azs.names, count.index)) - 1, length(element(data.aws_availability_zones.azs.names, count.index)))}-rt" }, var.common_tags)
 }
 
 resource "aws_route_table" "private_data_subnets_rt" {
@@ -166,7 +166,7 @@ resource "aws_route_table" "private_data_subnets_rt" {
     }
   }
 
-  tags = merge({ Name = lookup(var.private_data_subnets, "route_table_name", "") }, var.common_tags)
+  tags = merge({ Name = "${lookup(var.private_data_subnets, "route_table_name", "")}-az${substr(element(data.aws_availability_zones.azs.names, count.index), length(element(data.aws_availability_zones.azs.names, count.index)) - 1, length(element(data.aws_availability_zones.azs.names, count.index)))}-rt" }, var.common_tags)
 }
 
 resource "aws_route_table" "private_services_subnets_rt" {
@@ -196,7 +196,7 @@ resource "aws_route_table" "private_services_subnets_rt" {
     }
   }
 
-  tags = merge({ Name = lookup(var.private_services_subnets, "route_table_name", "") }, var.common_tags)
+  tags = merge({ Name = "${lookup(var.private_services_subnets, "route_table_name", "")}-az${substr(element(data.aws_availability_zones.azs.names, count.index), length(element(data.aws_availability_zones.azs.names, count.index)) - 1, length(element(data.aws_availability_zones.azs.names, count.index)))}-rt" }, var.common_tags)
 }
 
 #ASSOCIATE/LINK PRIVATE_ROUTES WITH PRIVATE_SUBNETS
