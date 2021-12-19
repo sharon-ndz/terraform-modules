@@ -37,24 +37,24 @@ data "aws_iam_policy_document" "kms_policy" {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
     }
-
   }
-  statement {
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
-    ]
 
-    resources = ["*"]
-    principals {
-      type        = "Service"
-      identifiers = ["delivery.logs.amazonaws.com"]
+  dynamic "statement" {
+    for_each = var.extra_poicies
+
+    content {
+      sid       = each.sid
+      effect    = each.effect
+      actions   = each.actions
+      resources = each.resources
+
+      principals {
+        identifiers = each.principals.identifiers
+        type        = each.principals.type
+      }
     }
-
   }
+
 }
 ########Exposing KMS key arn as ssm parameter #####################
 resource "aws_ssm_parameter" "kms_key_arn" {

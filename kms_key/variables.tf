@@ -24,3 +24,16 @@ variable "key_spec" {
 variable "rotation_enabled" {
   type = string
 }
+#############KMS IAM Policies##############
+variable "extra_poicies" {
+  type = list(object({
+    sid         = string
+    effect      = string
+    actions     = list(string)
+    resources   = list(string)
+    principals  = object({
+      identifiers = list(string)
+      type        = string
+    })
+  }))
+}
