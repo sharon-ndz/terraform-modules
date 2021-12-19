@@ -5,6 +5,9 @@ variable "environment" {
 variable "common_tags" {
   type = map
 }
+variable "extra_tags" {
+  type = map
+}
 #############KMS Variables##############
 variable "aws_service" {
   type = string
