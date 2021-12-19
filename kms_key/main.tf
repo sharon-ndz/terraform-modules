@@ -43,14 +43,14 @@ data "aws_iam_policy_document" "kms_policy" {
     for_each = var.extra_poicies
 
     content {
-      sid       = each.sid
-      effect    = each.effect
-      actions   = each.actions
-      resources = each.resources
+      sid       = lookup(statement.value, "sid", null)
+      effect    = lookup(statement.value, "effect", null)
+      actions   = lookup(statement.value, "actions", null)
+      resources = lookup(statement.value, "resources", null)
 
       principals {
-        identifiers = each.principals.identifiers
-        type        = each.principals.type
+        identifiers = lookup(lookup(statement.value, "principals", null), "identifiers", null)
+        type        = lookup(lookup(statement.value, "principals", null), "type", null)
       }
     }
   }
