@@ -19,7 +19,7 @@ resource "aws_kms_key" "generic_cmk" {
 }
 # Add an kms Key alias to the key
 resource "aws_kms_alias" "generic_cmk_alias" {
-  name          = "alias/${var.environment}/${data.aws_caller_identity.current.account_id}/${var.aws_service}/key"
+  name          = "alias/${var.environment}-${var.aws_service}-key"
   target_key_id = aws_kms_key.generic_cmk.key_id
 }
 
