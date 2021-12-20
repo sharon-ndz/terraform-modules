@@ -8,6 +8,11 @@ variable "instance_name" {
   default     = ""
 }
 
+variable "instance_profile_name" {
+    type = string
+    description = "instance profile name"
+}
+
 variable "instance_type" {
   type = string
 }
