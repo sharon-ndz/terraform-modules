@@ -109,7 +109,7 @@ resource "aws_nat_gateway" "ngw" {
 }
 
 #CREATING A PRIAVTE ROUTE_TABLE FOR PRIVATE_SUBNETS
-resource "aws_route_table" "private_app_sunets_rt" {
+resource "aws_route_table" "private_app_subnets_rt" {
   count  = length(aws_nat_gateway.ngw)
 
   vpc_id   = aws_vpc.vpc.id
@@ -201,19 +201,19 @@ resource "aws_route_table" "private_services_subnets_rt" {
 }
 
 #ASSOCIATE/LINK PRIVATE_ROUTES WITH PRIVATE_SUBNETS
-resource "aws_route_table_association" "private_app_sunets_rt_association" {
+resource "aws_route_table_association" "private_app_subnets_rt_association" {
   count          = length(var.private_app_subnets["cidrs_blocks"])
-  route_table_id = element(aws_route_table.private_app_sunets_rt.*.id, count.index)
+  route_table_id = element(aws_route_table.private_app_subnets_rt.*.id, count.index)
   subnet_id      = element(aws_subnet.private_app_subnets.*.id, count.index)
 }
 
-resource "aws_route_table_association" "private_data_sunets_rt_association" {
+resource "aws_route_table_association" "private_data_subnets_rt_association" {
   count          = length(var.private_data_subnets["cidrs_blocks"])
   route_table_id = element(aws_route_table.private_data_subnets_rt.*.id, count.index)
   subnet_id      = element(aws_subnet.private_data_subnets.*.id, count.index)
 }
 
-resource "aws_route_table_association" "private_services_sunets_rt_association" {
+resource "aws_route_table_association" "private_services_subnets_rt_association" {
   count          = length(var.private_services_subnets["cidrs_blocks"])
   route_table_id = element(aws_route_table.private_services_subnets_rt.*.id, count.index)
   subnet_id      = element(aws_subnet.private_services_subnets.*.id, count.index)
