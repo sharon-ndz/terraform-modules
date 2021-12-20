@@ -39,13 +39,17 @@ variable "disable_api_termination" {
   default = false
 }
 
-variable "root_volume_size" {
-  type = number
-}
-
-variable "root_volume_type" {
-  type    = string
-  default = ""
+variable "root_block_device" {
+    type = object({
+        volume_size             = number,
+        volume_type             = string
+        delete_on_termination   = bool
+        kms_key_id              = string
+        device_name             = string,
+        encrypted               = bool,
+        iops                    = string,
+        tags                    = object({})
+    })
 }
 
 variable "machine_iam_policies" {
@@ -103,11 +107,6 @@ variable "secondary_private_ips" {
   default = []
 }
 
-variable "root_volume_delete_on_termination" {
-  type    = bool
-  default = false
-}
-
 variable "private_ip" {
   type        = string
   description = "private ip"
@@ -119,10 +118,6 @@ variable "script" {
   default = ""
 }
 variable "common_tags" {
-  type = map(string)
-}
-
-variable "extra_tags" {
   type = map(string)
 }
 

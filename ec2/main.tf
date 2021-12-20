@@ -39,7 +39,7 @@ resource "aws_iam_role" "ec2_iam_role" {
 
 resource "aws_security_group" "ec2_security_group" {
   count       = var.create_sg ? 1 : 0
-  name        = "ec"
+  name        = var.sg_name
   description = "EC2 SG"
   vpc_id      = var.vpc_id
 
@@ -87,17 +87,21 @@ resource "aws_instance" "ec2_instance" {
   disable_api_termination     = var.disable_api_termination
 
   root_block_device {
-    volume_size           = var.root_volume_size
-    volume_type           = var.root_volume_type
-    delete_on_termination = var.root_volume_delete_on_termination
+    volume_size           = lookup(var.root_block_device, "volume_size", null)
+    volume_type           = lookup(var.root_block_device, "volume_type", null)
+    delete_on_termination = lookup(var.root_block_device, "delete_on_termination", null)
+    kms_key_id            = lookup(var.root_block_device, "kms_key_id", null)
+    device_name           = lookup(var.root_block_device, "device_name", null)
+    encrypted             = lookup(var.root_block_device, "encrypted", null)
+    iops                  = lookup(var.root_block_device, "iops", null)
+    tags                  = lookup(var.root_block_device, "tags", null)
   }
   
   tags = merge(
     {
       "Name" = var.instance_name
     },
-    var.common_tags,
-    var.extra_tags,
+    var.common_tags
   )
 
 
