@@ -81,7 +81,7 @@ resource "aws_instance" "ec2_instance" {
   subnet_id                   = var.subnet_id
   private_ip                  = var.private_ip
   secondary_private_ips       = var.secondary_private_ips
-  vpc_security_group_ids      = concat([aws_security_group.ec2_security_group.id], var.security_groups_ids)
+  vpc_security_group_ids      = var.create_sg ? concat([aws_security_group.ec2_security_group[0].id], var.security_groups_ids) : var.security_groups_ids 
   key_name                    = var.key_pair
   associate_public_ip_address = var.associate_public_ip_address
   disable_api_termination     = var.disable_api_termination
