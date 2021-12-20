@@ -16,7 +16,7 @@ variable "key_pair" {
   type = string
 }
 
-variable "secuity_groups_ids" {
+variable "security_groups_ids" {
     type = list(string)
     description = "(optional) ids of the SGs to be attahced to the instance"
     default = []
