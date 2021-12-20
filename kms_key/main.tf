@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "generic_cmk" {
   description = var.description
-  tags        = merge({ TargetEnv = var.environment }, { ResourceGroup = var.aws_service }, var.common_tags, var.extra_tags)
+  tags        = merge(var.common_tags)
   #https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key#is_enabled
   is_enabled = var.is_enabled
   ###https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key#customer_master_key_spec
@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "kms_policy" {
   }
 
   dynamic "statement" {
-    for_each = var.extra_poicies
+    for_each = var.extra_policies
 
     content {
       sid       = lookup(statement.value, "sid", null)
@@ -58,8 +58,8 @@ data "aws_iam_policy_document" "kms_policy" {
 }
 ########Exposing KMS key arn as ssm parameter #####################
 resource "aws_ssm_parameter" "kms_key_arn" {
-  name        = "/${var.environment}/${data.aws_caller_identity.current.account_id}/kmskey/${var.aws_service}/arn"
-  tags        = merge({ Envirnoment = var.environment }, { ResourceGroup = var.aws_service }, var.common_tags, var.extra_tags)
+  name        = "/${var.environment}/kmskey/${var.aws_service}/arn"
+  tags        = merge(var.common_tags)
   description = "kms key arn"
   type        = "String"
   value       = aws_kms_key.generic_cmk.arn

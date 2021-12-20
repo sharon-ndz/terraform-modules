@@ -5,9 +5,7 @@ variable "environment" {
 variable "common_tags" {
   type = map
 }
-variable "extra_tags" {
-  type = map
-}
+
 #############KMS Variables##############
 variable "aws_service" {
   type = string
@@ -25,7 +23,7 @@ variable "rotation_enabled" {
   type = string
 }
 #############KMS IAM Policies##############
-variable "extra_poicies" {
+variable "extra_policies" {
   type = list(object({
     sid         = string
     effect      = string
