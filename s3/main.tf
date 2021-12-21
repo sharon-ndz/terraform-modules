@@ -2,7 +2,7 @@
 resource "aws_s3_bucket" "this" {
 
   bucket = var.bucket_name
-  tags   = merge({ Name = var.buket_name }, var.common_tags)
+  tags   = merge({ Name = var.bucket_name }, var.common_tags)
   acl = var.acl
   force_destroy = var.force_destroy_option
 
@@ -48,9 +48,9 @@ data "aws_iam_policy_document" "this" {
   count = var.create_bucket_policy ? 1 : 0
 
   dynamic "statement" {
+    for_each = var.bucket_policy
+    
     content {
-        for_each = var.bucket_policy
-
         sid = lookup(statement.value, "sid", null)
 
         principals {
