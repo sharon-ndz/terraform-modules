@@ -90,7 +90,7 @@ resource "aws_instance" "ec2_instance" {
     volume_size           = lookup(var.root_block_device, "volume_size", null)
     volume_type           = lookup(var.root_block_device, "volume_type", null)
     delete_on_termination = lookup(var.root_block_device, "delete_on_termination", null)
-    kms_key_id            = lookup(var.root_block_device, "kms_key_id", null)
+    kms_key_id            = var.encryption_kms_key_id
     device_name           = lookup(var.root_block_device, "device_name", null)
     encrypted             = lookup(var.root_block_device, "encrypted", null)
     iops                  = lookup(var.root_block_device, "iops", null)
@@ -159,7 +159,7 @@ resource "aws_ebs_volume" "volume" {
   size              = var.volumes[count.index].volume_size
   type              = var.volumes[count.index].volume_type
   iops              = var.volumes[count.index].iops
-  kms_key_id        = var.volumes[count.index].kms_key_id
+  kms_key_id        = var.encryption_kms_key_id
   tags              = var.volumes[count.index].tags
 
 }

@@ -21,6 +21,10 @@ variable "key_pair" {
   type = string
 }
 
+variable "encryption_kms_key_id" {
+  type = string
+}
+
 variable "security_groups_ids" {
     type = list(string)
     description = "(optional) ids of the SGs to be attahced to the instance"
