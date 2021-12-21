@@ -45,16 +45,14 @@ variable "disable_api_termination" {
 }
 
 variable "root_block_device" {
-    type = object({
-        volume_size             = number,
-        volume_type             = string
-        delete_on_termination   = bool
-        kms_key_id              = string
-        device_name             = string,
-        encrypted               = bool,
-        iops                    = string,
-        tags                    = object({})
-    })
+  type = object({
+      volume_size             = number
+      volume_type             = string
+      delete_on_termination   = bool
+      encrypted               = bool
+      iops                    = string
+      tags                    = object({})
+  })
 }
 
 variable "machine_iam_policies" {
@@ -73,11 +71,11 @@ variable "machine_iam_policies" {
 
 variable "ingress_roles" {
   type = list(object({
-          description       = string,
-          from_port         = string,
-          to_port           = string,
-          protocol          = string,
-          cidr_blocks       = list(string),
+          description       = string
+          from_port         = string
+          to_port           = string
+          protocol          = string
+          cidr_blocks       = list(string)
           ipv6_cidr_blocks  = list(string)
       }
   ))
@@ -86,11 +84,11 @@ variable "ingress_roles" {
 
 variable "egress_roles" {
   type = list(object({
-          description       = string,
-          from_port         = string,
-          to_port           = string,
-          protocol          = string,
-          cidr_blocks       = list(string),
+          description       = string
+          from_port         = string
+          to_port           = string
+          protocol          = string
+          cidr_blocks       = list(string)
           ipv6_cidr_blocks  = list(string)
       }
   ))
@@ -128,13 +126,13 @@ variable "common_tags" {
 
 variable "volumes" {
   type = list(object({
-    device_name           = string,
-    delete_on_termination = bool,
-    volume_size           = number,
-    volume_type           = string,
-    encrypted             = bool,
-    kms_key_id            = string,
-    iops                  = string,
+    device_name           = string
+    delete_on_termination = bool
+    volume_size           = number
+    volume_type           = string
+    encrypted             = bool
+    kms_key_id            = string
+    iops                  = string
     tags                  = object({})
   }))
   default = []
