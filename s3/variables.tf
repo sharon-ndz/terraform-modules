@@ -55,9 +55,9 @@ variable "bucket_policy" {
     resources = list(string)
 
     condition = object({
-      test     = string
-      variable = string
-      values   = list(string)
+      test     = optional(string)
+      variable = optional(string)
+      values   = optional(list(string))
     })
 
    }))

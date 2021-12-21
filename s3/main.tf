@@ -63,10 +63,14 @@ data "aws_iam_policy_document" "this" {
         resources = lookup(statement.value, "resources", null)
 
 
-        condition {
-          test     = lookup(lookup(statement.value, "condition", null),"test", null)
-          variable = lookup(lookup(statement.value, "condition", null),"variable", null)
-          values   = lookup(lookup(statement.value, "condition", null),"values", null)
+        dynamic "condition" {
+          for_each = statement.value.condition == null ? [] : statement.value.condition == {} ? [] : [1]
+
+          content {
+            test     = lookup(lookup(statement.value, "condition", null),"test", null)
+            variable = lookup(lookup(statement.value, "condition", null),"variable", null)
+            values   = lookup(lookup(statement.value, "condition", null),"values", null)
+          }
         }
     }
   }
