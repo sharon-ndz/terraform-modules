@@ -49,13 +49,13 @@ data "aws_iam_policy_document" "this" {
 
   dynamic "statement" {
     for_each = var.bucket_policy
-    
+
     content {
         sid = lookup(statement.value, "sid", null)
 
         principals {
-          type        = lookup(lookup(statement.value, "principals", null),"type", null)
-          identifiers = lookup(lookup(statement.value, "principals", null),"identifiers", null)
+          type        = lookup(lookup(statement.value, "principals", {}),"type", null)
+          identifiers = lookup(lookup(statement.value, "principals", {}),"identifiers", null)
         }
 
         effect    = lookup(statement.value, "effect", null)
@@ -64,9 +64,9 @@ data "aws_iam_policy_document" "this" {
 
 
         condition {
-          test     = lookup(lookup(statement.value, "condition", null),"test", null)
-          variable = lookup(lookup(statement.value, "condition", null),"variable", null)
-          values   = lookup(lookup(statement.value, "condition", null),"values", null)
+          test     = lookup(lookup(statement.value, "condition", {}),"test", null)
+          variable = lookup(lookup(statement.value, "condition", {}),"variable", null)
+          values   = lookup(lookup(statement.value, "condition", {}),"values", null)
         }
     }
   }
