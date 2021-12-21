@@ -1,20 +1,9 @@
 ##############Generic variables############
-variable "environment" {
-  type = string
-}
-
 variable "common_tags" {
   type = map
 }
 
-variable "aws_service" {
-  type = string
-}
-
 #########S3 bucket variables###############
-variable "resource_name" {
-  type = string
-}
 variable "acl" {
   type = string
 }
@@ -43,15 +32,11 @@ variable "expiration_in_days" {
   type = string
 }
 
-variable "s3_kms_key_arn" {
-  type = string
-}
-
 variable "create_bucket_policy" {
   type = bool
 }
 
-variable "buket_name" {
+variable "bucket_name" {
     type = string
     description = "The name of the bucket"
 }
