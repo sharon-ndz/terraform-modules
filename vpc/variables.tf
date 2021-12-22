@@ -86,11 +86,11 @@ variable "public_subnets" {
 ##Flow Logs###
 variable "vpc_flow_logs" {
   type = object({
-    bucket_arn                = ""
-    log_destination_type      = ""
-    traffic_type              = ""
-    max_aggregation_interval  = ""
-    name_prefix               = ""
+    bucket_arn                = string
+    log_destination_type      = string
+    traffic_type              = string
+    max_aggregation_interval  = string
+    name_prefix               = string
   })
   description = "vpc flow logs related variables"
 }
