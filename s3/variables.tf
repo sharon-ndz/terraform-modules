@@ -54,11 +54,11 @@ variable "bucket_policy" {
     actions = list(string)
     resources = list(string)
 
-    condition = object({
+    condition = list(object({
       test     = string
       variable = string
       values   = list(string)
-    })
+    }))
 
    }))
    default = []

@@ -1,9 +1,9 @@
 ########Create S3 Bucket for VPC Flow Logs###################
 resource "aws_s3_bucket" "this" {
 
-  bucket = var.bucket_name
-  tags   = merge({ Name = var.bucket_name }, var.common_tags)
-  acl = var.acl
+  bucket        = var.bucket_name
+  tags          = merge({ Name = var.bucket_name }, var.common_tags)
+  acl           = var.acl
   force_destroy = var.force_destroy_option
 
   versioning {
@@ -64,12 +64,12 @@ data "aws_iam_policy_document" "this" {
 
 
         dynamic "condition" {
-          for_each = statement.value.condition == null ? [] : statement.value.condition == {} ? [] : [1]
+          for_each = statement.value.condition
 
           content {
-            test     = lookup(lookup(statement.value, "condition", null),"test", null)
-            variable = lookup(lookup(statement.value, "condition", null),"variable", null)
-            values   = lookup(lookup(statement.value, "condition", null),"values", null)
+            test     = lookup(condition.value, "test", null)
+            variable = lookup(condition.value, "variable", null)
+            values   = lookup(condition.value, "values", null)
           }
         }
     }
@@ -77,8 +77,9 @@ data "aws_iam_policy_document" "this" {
 }
 
 ##########################################
-############# Blcok Public access for bucket #############
-resource "aws_s3_bucket_public_access_block" "S3PublicAccess" {
+############# Block Public access for bucket #############
+resource "aws_s3_bucket_public_access_block" "s3_public_access" {
+  count                   = var.acl == "private" ? 1 : 0
   bucket                  = aws_s3_bucket.this.id
   block_public_acls       = true
   block_public_policy     = true
