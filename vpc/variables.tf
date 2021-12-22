@@ -82,3 +82,20 @@ variable "public_subnets" {
     route_table_name         = string
   })
 }
+
+##Flow Logs###
+variable "vpc_flow_logs" {
+  type = object({
+    bucket_arn                = string
+    log_destination_type      = string
+    traffic_type              = string
+    max_aggregation_interval  = string
+    name_prefix               = string
+  })
+  description = "vpc flow logs related variables"
+}
+
+variable "s3_endpoint_name_prefix" {
+  type = string
+  description = "name of the s3 vpc endpoint"
+}
