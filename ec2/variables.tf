@@ -73,6 +73,12 @@ variable "machine_iam_policies" {
   default = []
 }
 
+variable "machine_extra_policies_arns" {
+  type = list(string)
+  description = "AWS ARNs for extra policies"
+  default = []
+}
+
 variable "ingress_roles" {
   type = list(object({
       description       = string
