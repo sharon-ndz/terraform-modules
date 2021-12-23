@@ -89,9 +89,8 @@ resource "aws_instance" "ec2_instance" {
     device_name           = lookup(var.root_block_device, "device_name", null)
     encrypted             = lookup(var.root_block_device, "encrypted", null)
     iops                  = lookup(var.root_block_device, "iops", null)
-    tags                  = lookup(var.root_block_device, "tags", var.common_tags)
-  }
-
+    tags                  = merge({"Name" = var.instance_name},var.common_tags)
+    }
   tags = merge(
     {
       "Name" = var.instance_name
