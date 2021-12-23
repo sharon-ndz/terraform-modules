@@ -85,7 +85,7 @@ resource "aws_instance" "ec2_instance" {
     iops                  = lookup(var.root_block_device, "iops", null)
     tags                  = lookup(var.root_block_device, "tags", null)
   }
-  
+
   tags = merge(
     {
       "Name" = var.instance_name
@@ -102,11 +102,11 @@ resource "aws_instance" "ec2_instance" {
     {
       if( $csvValue.Contains("|") ) {
         $filename = "$env:TEMP\input.csv"
-        $result= $csvValue.split('|')  
-        $result | out-file $filename 
+        $result= $csvValue.split('|')
+        $result | out-file $filename
         $disks =  Import-Csv $filename -Header "Disk", "Letter", "Label"
-      
-        for ($num = 0 ; $num -lt $len; $num++) {  
+
+        for ($num = 0 ; $num -lt $len; $num++) {
           $letter =  $disks.letter.get($num)
           $diskNum =  $disks.disk.get($num)
           $diskLabel = $disks.label.get($num)
@@ -118,10 +118,10 @@ resource "aws_instance" "ec2_instance" {
 
       }else {
         $filename = "$env:TEMP\input.csv"
-        $csvValue | out-file $filename  
-        $disks =  Import-Csv $filename -Header "Disk", "Letter", "Label" 
-        
-        for ($num = 0 ; $num -lt $len; $num++) {  
+        $csvValue | out-file $filename
+        $disks =  Import-Csv $filename -Header "Disk", "Letter", "Label"
+
+        for ($num = 0 ; $num -lt $len; $num++) {
           $letter =  $disks.letter
           $diskNum =  $disks.disk
           $diskLabel = $disks.label
@@ -129,13 +129,13 @@ resource "aws_instance" "ec2_instance" {
           $text  |ForEach-Object {$_ -Replace 'Warning', 'Caution'} |
               Set-Content -Path $env:TEMP\disk$diskNum.txt
         diskpart /s  $env:TEMP\disk$diskNum.txt
-          } 
+          }
       }
     }
     ${var.script}
-    
+
     </powershell>
-  EOF 
+  EOF
   lifecycle {
     ignore_changes = [ami, tags, user_data, root_block_device, iam_instance_profile]
 
