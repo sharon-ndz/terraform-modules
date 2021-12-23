@@ -95,8 +95,8 @@ resource "aws_instance" "ec2_instance" {
   tags = merge(
     {
       "Name" = var.instance_name
-    }#,
-    #var.common_tags
+    },
+    var.common_tags
   )
 
 
