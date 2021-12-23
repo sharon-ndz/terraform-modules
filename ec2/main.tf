@@ -22,6 +22,12 @@ resource "aws_iam_role" "ec2_iam_role" {
   }
 }
 
+resource "aws_iam_role_policy_attachment" "role_policies" {
+  count      = length(var.machine_extra_policies_arns)
+  role       = aws_iam_role.ec2_iam_role.name
+  policy_arn = var.machine_extra_policies_arns[count.index]
+}
+
 resource "aws_security_group" "ec2_security_group" {
   count       = var.create_sg ? 1 : 0
   name        = var.sg_name
