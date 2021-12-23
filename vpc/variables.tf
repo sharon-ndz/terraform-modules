@@ -41,7 +41,17 @@ variable "nat_gateway_name" {
   type = string
 }
 
-###Private Subnets###
+###Private LB Subnets###
+variable "private_lb_subnets" {
+  type = object({
+    routes                   = list(any)
+    cidrs_blocks             = list(string)
+    subnets_name_prefix      = string
+    route_table_name         = string
+  })
+}
+
+###Private App Subnets###
 variable "private_app_subnets" {
   type = object({
     routes                   = list(any)
