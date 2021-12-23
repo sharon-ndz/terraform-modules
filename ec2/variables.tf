@@ -75,26 +75,30 @@ variable "machine_iam_policies" {
 
 variable "ingress_roles" {
   type = list(object({
-          description       = string
-          from_port         = string
-          to_port           = string
-          protocol          = string
-          cidr_blocks       = list(string)
-          ipv6_cidr_blocks  = list(string)
-      }
+      description       = string
+      from_port         = string
+      to_port           = string
+      protocol          = string
+      cidr_blocks       = list(string)
+      ipv6_cidr_blocks  = list(string)
+      security_groups   = list(string)
+      self              = bool
+    }
   ))
   default = []
 }
 
 variable "egress_roles" {
   type = list(object({
-          description       = string
-          from_port         = string
-          to_port           = string
-          protocol          = string
-          cidr_blocks       = list(string)
-          ipv6_cidr_blocks  = list(string)
-      }
+      description       = string
+      from_port         = string
+      to_port           = string
+      protocol          = string
+      cidr_blocks       = list(string)
+      ipv6_cidr_blocks  = list(string)
+      security_groups   = list(string)
+      self              = bool
+    }
   ))
   default = []
 }

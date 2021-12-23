@@ -1,18 +1,3 @@
-locals {
-  volumesLen = length(var.volumes)
-}
-
-data "aws_iam_policy_document" "instance_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-}
-
 resource "aws_iam_role" "ec2_iam_role" {
   name               = var.instance_profile_name
   assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
@@ -52,6 +37,8 @@ resource "aws_security_group" "ec2_security_group" {
         protocol            = lookup(ingress.value, "protocol", null)
         cidr_blocks         = lookup(ingress.value, "cidr_blocks", null)
         ipv6_cidr_blocks    = lookup(ingress.value, "ipv6_cidr_blocks", null)
+        security_groups     = lookup(ingress.value, "security_groups", null)
+        self                = lookup(ingress.value, "self", null)
     }
   }
 
@@ -64,6 +51,8 @@ resource "aws_security_group" "ec2_security_group" {
         protocol            = lookup(egress.value, "protocol", null)
         cidr_blocks         = lookup(egress.value, "cidr_blocks", null)
         ipv6_cidr_blocks    = lookup(egress.value, "ipv6_cidr_blocks", null)
+        security_groups     = lookup(egress.value, "security_groups", null)
+        self                = lookup(egress.value, "self", null)
     }
   }
 }
@@ -164,7 +153,7 @@ resource "aws_ebs_volume" "volume" {
 
 }
 
-resource "aws_volume_attachment" "wsfc_node1_volume1_attachment" {
+resource "aws_volume_attachment" "ec2_instance_volumes_attachments" {
   count       = length(var.volumes)
   device_name = var.volumes[count.index].device_name
   volume_id   = aws_ebs_volume.volume[count.index].id
