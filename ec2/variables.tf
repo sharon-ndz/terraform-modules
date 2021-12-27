@@ -177,3 +177,23 @@ variable "subnet_id" {
   type = string
   description = "subnet id for creation of the EC2 instance"
 }
+
+variable "create_zone_record" {
+  type = string
+}
+
+variable "zone_id" {
+  type = string
+}
+
+variable "record_name" {
+  type = string
+}
+
+variable "record_type" {
+  type = string
+}
+
+variable "record_ttl" {
+  type = string
+}
