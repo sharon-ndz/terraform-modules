@@ -178,7 +178,7 @@ resource "aws_network_interface" "networks" {
 }
 
 resource "aws_route53_record" "internal_resolving" {
-  count   = var.create_zone_record
+  count   = var.create_zone_record ? 1 : 0
 
   zone_id = var.zone_id
   name    = var.record_name
