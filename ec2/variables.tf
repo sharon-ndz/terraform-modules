@@ -179,7 +179,7 @@ variable "subnet_id" {
 }
 
 variable "create_zone_record" {
-  type = string
+  type = bool
 }
 
 variable "zone_id" {
