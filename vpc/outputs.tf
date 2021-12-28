@@ -33,3 +33,33 @@ output "services_subnets_ids" {
   description = "services subnets ids"
   value       = aws_subnet.private_services_subnets.*.id
 }
+
+# Public Subnets CIDRs
+output "public_subnets_cidrs" {
+  description = "public subnets cidrs"
+  value       = aws_subnet.public_subnets.*.cidr_block
+}
+
+# LB Subnets CIDRs
+output "lb_subnets_cidrs" {
+  description = "lb subnets cidrs"
+  value       = aws_subnet.private_lb_subnets.*.cidr_block
+}
+
+# App Subnets CIDRs
+output "app_subnets_cidrs" {
+  description = "app subnets cidrs"
+  value       = aws_subnet.private_app_subnets.*.cidr_block
+}
+
+# Data Subnets CIDRs
+output "data_subnets_cidrs" {
+  description = "data subnets cidrs"
+  value       = aws_subnet.private_data_subnets.*.cidr_block
+}
+
+# Services Subnets CIDRs
+output "services_subnets_cidrs" {
+  description = "services subnets cidrs"
+  value       = aws_subnet.private_services_subnets.*.cidr_block
+}
