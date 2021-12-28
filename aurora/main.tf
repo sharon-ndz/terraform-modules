@@ -286,7 +286,7 @@ resource "aws_security_group" "this" {
     content {
         description         = lookup(ingress.value, "description", null)
         from_port           = lookup(ingress.value, "from_port", local.port)
-        to_port             = lookup(ingress.value, "from_port", local.port)
+        to_port             = lookup(ingress.value, "to_port", local.port)
         protocol            = lookup(ingress.value, "protocol", null)
         cidr_blocks         = lookup(ingress.value, "cidr_blocks", null)
         ipv6_cidr_blocks    = lookup(ingress.value, "ipv6_cidr_blocks", null)
@@ -300,7 +300,7 @@ resource "aws_security_group" "this" {
     content {
         description         = lookup(egress.value, "description", null)
         from_port           = lookup(ingress.value, "from_port", local.port)
-        to_port             = lookup(ingress.value, "from_port", local.port)
+        to_port             = lookup(ingress.value, "to_port", local.port)
         protocol            = lookup(egress.value, "protocol", null)
         cidr_blocks         = lookup(egress.value, "cidr_blocks", null)
         ipv6_cidr_blocks    = lookup(egress.value, "ipv6_cidr_blocks", null)
