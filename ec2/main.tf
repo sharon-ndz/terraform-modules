@@ -176,3 +176,13 @@ resource "aws_network_interface" "networks" {
     device_index = var.networks[count.index].device_index
   }
 }
+
+resource "aws_route53_record" "internal_resolving" {
+  count   = var.create_zone_record ? 1 : 0
+
+  zone_id = var.zone_id
+  name    = var.record_name
+  type    = var.record_type
+  ttl     = var.record_ttl
+  records = [aws_instance.ec2_instance.private_ip]
+}
