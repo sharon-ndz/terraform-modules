@@ -180,20 +180,25 @@ variable "subnet_id" {
 
 variable "create_zone_record" {
   type = bool
+  default = false
 }
 
 variable "zone_id" {
   type = string
+  default = ""
 }
 
 variable "record_name" {
   type = string
+  default = ""
 }
 
 variable "record_type" {
   type = string
+  default = ""
 }
 
 variable "record_ttl" {
   type = string
+  default = ""
 }
