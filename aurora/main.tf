@@ -41,7 +41,7 @@ resource "aws_db_subnet_group" "this" {
 resource "aws_rds_cluster_parameter_group" "cluster_parameter_group" {
   name        = var.db_cluster_parameter_group_name
   family      = "aurora-mysql5.7"
-  description = "${var.db_cluster_parameter_group_name}-cluster-parameter-group"
+  description = "parameter group for ${var.db_cluster_parameter_group_name} cluster"
   tags        = var.tags
 }
 
@@ -293,7 +293,7 @@ resource "aws_appautoscaling_policy" "this" {
 resource "aws_security_group" "this" {
   count = var.create_cluster && var.create_security_group ? 1 : 0
 
-  name        = var.name
+  name        = var.security_group_name
   vpc_id      = var.vpc_id
   description = coalesce(var.security_group_description, "Control traffic to/from RDS Aurora ${var.name}")
 
@@ -325,5 +325,5 @@ resource "aws_security_group" "this" {
     }
   }
 
-  tags = merge(var.tags, var.security_group_tags, { Name = var.name })
+  tags = merge(var.tags, var.security_group_tags, { Name = var.security_group_name })
 }

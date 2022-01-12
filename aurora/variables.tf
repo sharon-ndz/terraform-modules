@@ -462,6 +462,12 @@ variable "autoscaling_target_connections" {
 }
 
 # aws_security_group
+variable "security_group_name" {
+  description = "Name of the security group"
+  type        = string
+  default     = ""
+}
+
 variable "create_security_group" {
   description = "Determines whether to create security group for RDS cluster"
   type        = bool
