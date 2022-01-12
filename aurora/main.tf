@@ -291,7 +291,7 @@ resource "aws_appautoscaling_policy" "this" {
 resource "aws_security_group" "this" {
   count = var.create_cluster && var.create_security_group ? 1 : 0
 
-  name_prefix = "${var.name}-"
+  name        = var.name
   vpc_id      = var.vpc_id
   description = coalesce(var.security_group_description, "Control traffic to/from RDS Aurora ${var.name}")
 
