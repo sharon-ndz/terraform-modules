@@ -106,6 +106,7 @@ resource "aws_subnet" "private_services_subnets" {
 #CREATING EIP NAT_GATEWAY FOR NAT_GATEWAY REDUNDANCY
 resource "aws_eip" "eip_ngw" {
   count = var.total_nat_gateway_required
+  vpc   = true
   tags  = merge({ Name = "${var.eip_for_nat_gateway_name}-${count.index + 1}" }, var.common_tags)
 }
 
