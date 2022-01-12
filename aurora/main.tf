@@ -142,6 +142,17 @@ resource "aws_db_parameter_group" "db_parameter_group" {
   tags        = var.tags
 }
 
+resource "aws_db_option_group" "example" {
+  for_each = var.create_cluster && !local.is_serverless ? var.instances : {}
+
+  name                     = lookup(each.value, "option_group_name", "")
+  option_group_description = "Option Group for ${lookup(each.value, "option_group_name", "")}"
+  engine_name              = lookup(each.value, "engine_name", "")
+  major_engine_version     = lookup(each.value, "major_engine_version", "")
+
+  tags                     = merge(var.tags, { Name = lookup(each.value, "option_group_name", "") })
+}
+
 resource "aws_rds_cluster_instance" "this" {
   for_each = var.create_cluster && !local.is_serverless ? var.instances : {}
 
