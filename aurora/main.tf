@@ -38,6 +38,13 @@ resource "aws_db_subnet_group" "this" {
   tags = var.tags
 }
 
+resource "aws_rds_cluster_parameter_group" "cluster_parameter_group" {
+  name        = var.db_cluster_parameter_group_name
+  family      = "aurora-mysql5.7"
+  description = "parameter group for ${var.db_cluster_parameter_group_name} cluster"
+  tags        = var.tags
+}
+
 resource "aws_rds_cluster" "this" {
   count = var.create_cluster ? 1 : 0
 
@@ -68,7 +75,7 @@ resource "aws_rds_cluster" "this" {
   snapshot_identifier                 = var.snapshot_identifier
   storage_encrypted                   = var.storage_encrypted
   apply_immediately                   = var.apply_immediately
-  db_cluster_parameter_group_name     = var.db_cluster_parameter_group_name
+  db_cluster_parameter_group_name     = aws_rds_cluster_parameter_group.cluster_parameter_group.id
   db_instance_parameter_group_name    = var.allow_major_version_upgrade ? var.db_cluster_db_instance_parameter_group_name : null
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   backtrack_window                    = local.backtrack_window
@@ -122,10 +129,19 @@ resource "aws_rds_cluster" "this" {
       replication_source_identifier,
       # See docs here https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_global_cluster#new-global-cluster-from-existing-db-cluster
       global_cluster_identifier,
+      master_username,
+      master_password
     ]
   }
 
   tags = merge(var.tags, var.cluster_tags)
+}
+
+resource "aws_db_parameter_group" "db_parameter_group" {
+  name        = var.db_parameter_group_name
+  family      = "aurora-mysql5.7"
+  description = "${var.db_parameter_group_name}-parameter-group"
+  tags        = var.tags
 }
 
 resource "aws_rds_cluster_instance" "this" {
@@ -142,7 +158,7 @@ resource "aws_rds_cluster_instance" "this" {
   instance_class                        = lookup(each.value, "instance_class", var.instance_class)
   publicly_accessible                   = lookup(each.value, "publicly_accessible", var.publicly_accessible)
   db_subnet_group_name                  = local.db_subnet_group_name
-  db_parameter_group_name               = lookup(each.value, "db_parameter_group_name", var.db_parameter_group_name)
+  db_parameter_group_name               = aws_db_parameter_group.db_parameter_group.id
   apply_immediately                     = lookup(each.value, "apply_immediately", var.apply_immediately)
   monitoring_role_arn                   = local.rds_enhanced_monitoring_arn
   monitoring_interval                   = lookup(each.value, "monitoring_interval", var.monitoring_interval)
@@ -277,7 +293,7 @@ resource "aws_appautoscaling_policy" "this" {
 resource "aws_security_group" "this" {
   count = var.create_cluster && var.create_security_group ? 1 : 0
 
-  name_prefix = "${var.name}-"
+  name        = var.security_group_name
   vpc_id      = var.vpc_id
   description = coalesce(var.security_group_description, "Control traffic to/from RDS Aurora ${var.name}")
 
@@ -309,5 +325,5 @@ resource "aws_security_group" "this" {
     }
   }
 
-  tags = merge(var.tags, var.security_group_tags, { Name = var.name })
+  tags = merge(var.tags, var.security_group_tags, { Name = var.security_group_name })
 }
