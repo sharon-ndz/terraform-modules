@@ -142,7 +142,7 @@ resource "aws_instance" "ec2_instance" {
     </powershell>
   EOF
   lifecycle {
-    ignore_changes = [ami, user_data, root_block_device, iam_instance_profile]
+    ignore_changes = [ami, user_data, iam_instance_profile]
 
   }
 }
