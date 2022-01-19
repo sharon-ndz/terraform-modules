@@ -15,7 +15,7 @@ resource "aws_iam_role" "ec2_iam_role" {
               Action   = lookup(inline_policy.value.statement, "action", null)
               Effect   = lookup(inline_policy.value.statement, "effect", null)
               Resource = lookup(inline_policy.value.statement, "resource", null)
-            },
+            }
           ]
         })
     }
