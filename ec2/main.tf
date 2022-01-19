@@ -12,9 +12,9 @@ resource "aws_iam_role" "ec2_iam_role" {
           Version = "2012-10-17"
           Statement = [
             {
-              Action   = lookup(inline_policy.value, "action", null)
-              Effect   = lookup(inline_policy.value, "effect", null)
-              Resource = lookup(inline_policy.value, "resource", null)
+              Action   = lookup(inline_policy.value.statement, "action", null)
+              Effect   = lookup(inline_policy.value.statement, "effect", null)
+              Resource = lookup(inline_policy.value.statement, "resource", null)
             },
           ]
         })
