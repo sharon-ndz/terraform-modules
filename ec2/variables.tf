@@ -63,11 +63,11 @@ variable "machine_iam_policies" {
   type = list(object(
   	{
   		policy_name = string,
-  	    statement = list(object({
-  		    action   = list(string)
-  		    effect   = string
-  		    resource = string
-  		}))
+  	  statements = list(object({
+        Action   = list(string)
+  		  Effect   = string
+  		  Resource = list(string)
+      }))
   	}
   ))
   default = []

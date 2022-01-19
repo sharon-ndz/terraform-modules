@@ -6,17 +6,11 @@ resource "aws_iam_role" "ec2_iam_role" {
     for_each = var.machine_iam_policies
 
     content {
-        name = lookup(inline_policy.value, "name", null)
+        name = lookup(inline_policy.value, "policy_name", null)
 
         policy = jsonencode({
           Version = "2012-10-17"
-          Statement = [
-            {
-              Action   = lookup(inline_policy.value, "action", null)
-              Effect   = lookup(inline_policy.value, "effect", null)
-              Resource = lookup(inline_policy.value, "resource", null)
-            },
-          ]
+          Statement = inline_policy.value.statements
         })
     }
   }
