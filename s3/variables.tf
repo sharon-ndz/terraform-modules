@@ -28,7 +28,7 @@ variable "life_cycle_storage_class" {
 
 variable "transition_in_days" {
   type = string
-  default = "0"
+  default = "30"
 }
 
 variable "expiration_in_days" {
