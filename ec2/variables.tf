@@ -66,7 +66,7 @@ variable "machine_iam_policies" {
   	    statement = object({
   		    action   = list(string)
   		    effect   = string
-  		    resource = string
+  		    resource = list(string)
   		})
   	}
   ))
