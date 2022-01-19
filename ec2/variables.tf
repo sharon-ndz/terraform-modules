@@ -62,8 +62,12 @@ variable "root_block_device" {
 variable "machine_iam_policies" {
   type = list(object(
   	{
-  		  policy_name = string,
-  	    statements = list(object({}))
+  		policy_name = string,
+  	  statements = list(object({
+        Action   = list(string)
+  		  Effect   = string
+  		  Resource = list(string)
+      }))
   	}
   ))
   default = []
