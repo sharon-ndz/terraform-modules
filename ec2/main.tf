@@ -74,6 +74,7 @@ resource "aws_instance" "ec2_instance" {
   key_name                    = var.key_pair
   associate_public_ip_address = var.associate_public_ip_address
   disable_api_termination     = var.disable_api_termination
+  monitoring                  = var.enable_detailed_monitoring
 
   root_block_device {
     volume_size           = lookup(var.root_block_device, "volume_size", null)
