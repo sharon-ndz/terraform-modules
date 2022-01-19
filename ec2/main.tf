@@ -10,13 +10,7 @@ resource "aws_iam_role" "ec2_iam_role" {
 
         policy = jsonencode({
           Version = "2012-10-17"
-          Statement = [
-            {
-              Action   = lookup(inline_policy.value.statement, "action", null)
-              Effect   = lookup(inline_policy.value.statement, "effect", null)
-              Resource = lookup(inline_policy.value.statement, "resource", null)
-            }
-          ]
+          Statement = inline_policy.value.statements
         })
     }
   }
