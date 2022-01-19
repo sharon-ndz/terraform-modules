@@ -18,18 +18,22 @@ variable "enable_bucket_versioning" {
 
 variable "life_cycle_option" {
   type = string
+  default = "false"
 }
 
 variable "life_cycle_storage_class" {
   type = string
+  default = "STANDARD_IA"
 }
 
 variable "transition_in_days" {
   type = string
+  default = "0"
 }
 
 variable "expiration_in_days" {
   type = string
+  default = "0"
 }
 
 variable "create_bucket_policy" {
