@@ -62,7 +62,7 @@ variable "root_block_device" {
 variable "machine_iam_policies" {
   type = list(object(
   	{
-  		  name = string,
+  		  policy_name = string,
   	    statement = list(object({
   		    action   = list(string)
   		    effect   = string
