@@ -1,0 +1,7 @@
+locals {
+  lt_name                 = coalesce(var.lt_name, var.name)
+  launch_template         = var.create_lt ? aws_launch_template.this[0].name : var.launch_template
+  launch_template_version = var.create_lt && var.lt_version == null ? aws_launch_template.this[0].latest_version : var.lt_version
+
+  tags                    = merge({"Name" = var.instance_name}, var.asg_tgs, var.common_tags)
+}
