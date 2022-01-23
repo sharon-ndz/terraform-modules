@@ -1,13 +1,13 @@
 resource "aws_lb" "this" {
   count = var.create_lb ? 1 : 0
 
-  name        = var.name
-  name_prefix = var.name_prefix
+  name                             = var.name
+  name_prefix                      = var.name_prefix
 
-  load_balancer_type = var.load_balancer_type
-  internal           = var.internal
-  security_groups    = var.security_groups
-  subnets            = var.subnets
+  load_balancer_type               = var.load_balancer_type
+  internal                         = var.internal
+  security_groups                  = var.security_groups
+  subnets                          = var.subnets
 
   idle_timeout                     = var.idle_timeout
   enable_cross_zone_load_balancing = var.enable_cross_zone_load_balancing
@@ -16,7 +16,6 @@ resource "aws_lb" "this" {
   ip_address_type                  = var.ip_address_type
   drop_invalid_header_fields       = var.drop_invalid_header_fields
 
-  # See notes in README (ref: https://github.com/terraform-providers/terraform-provider-aws/issues/7987)
   dynamic "access_logs" {
     for_each = length(keys(var.access_logs)) == 0 ? [] : [var.access_logs]
 
@@ -56,14 +55,14 @@ resource "aws_lb" "this" {
 resource "aws_lb_target_group" "main" {
   count = var.create_lb ? length(var.target_groups) : 0
 
-  name        = lookup(var.target_groups[count.index], "name", null)
-  name_prefix = lookup(var.target_groups[count.index], "name_prefix", null)
+  name                               = lookup(var.target_groups[count.index], "name", null)
+  name_prefix                        = lookup(var.target_groups[count.index], "name_prefix", null)
 
-  vpc_id           = var.vpc_id
-  port             = lookup(var.target_groups[count.index], "backend_port", null)
-  protocol         = lookup(var.target_groups[count.index], "backend_protocol", null) != null ? upper(lookup(var.target_groups[count.index], "backend_protocol")) : null
-  protocol_version = lookup(var.target_groups[count.index], "protocol_version", null) != null ? upper(lookup(var.target_groups[count.index], "protocol_version")) : null
-  target_type      = lookup(var.target_groups[count.index], "target_type", null)
+  vpc_id                             = var.vpc_id
+  port                               = lookup(var.target_groups[count.index], "backend_port", null)
+  protocol                           = lookup(var.target_groups[count.index], "backend_protocol", null) != null ? upper(lookup(var.target_groups[count.index], "backend_protocol")) : null
+  protocol_version                   = lookup(var.target_groups[count.index], "protocol_version", null) != null ? upper(lookup(var.target_groups[count.index], "protocol_version")) : null
+  target_type                        = lookup(var.target_groups[count.index], "target_type", null)
 
   deregistration_delay               = lookup(var.target_groups[count.index], "deregistration_delay", null)
   slow_start                         = lookup(var.target_groups[count.index], "slow_start", null)
@@ -539,8 +538,8 @@ resource "aws_lb_listener" "frontend_http_tcp" {
 
   load_balancer_arn = aws_lb.this[0].arn
 
-  port     = var.http_tcp_listeners[count.index]["port"]
-  protocol = var.http_tcp_listeners[count.index]["protocol"]
+  port              = var.http_tcp_listeners[count.index]["port"]
+  protocol          = var.http_tcp_listeners[count.index]["protocol"]
 
   dynamic "default_action" {
     for_each = length(keys(var.http_tcp_listeners[count.index])) == 0 ? [] : [var.http_tcp_listeners[count.index]]
@@ -587,11 +586,11 @@ resource "aws_lb_listener" "frontend_https" {
 
   load_balancer_arn = aws_lb.this[0].arn
 
-  port            = var.https_listeners[count.index]["port"]
-  protocol        = lookup(var.https_listeners[count.index], "protocol", "HTTPS")
-  certificate_arn = var.https_listeners[count.index]["certificate_arn"]
-  ssl_policy      = lookup(var.https_listeners[count.index], "ssl_policy", var.listener_ssl_policy_default)
-  alpn_policy     = lookup(var.https_listeners[count.index], "alpn_policy", null)
+  port              = var.https_listeners[count.index]["port"]
+  protocol          = lookup(var.https_listeners[count.index], "protocol", "HTTPS")
+  certificate_arn   = var.https_listeners[count.index]["certificate_arn"]
+  ssl_policy        = lookup(var.https_listeners[count.index], "ssl_policy", var.listener_ssl_policy_default)
+  alpn_policy       = lookup(var.https_listeners[count.index], "alpn_policy", null)
 
   dynamic "default_action" {
     for_each = length(keys(var.https_listeners[count.index])) == 0 ? [] : [var.https_listeners[count.index]]
