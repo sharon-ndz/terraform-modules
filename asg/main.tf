@@ -409,7 +409,7 @@ resource "aws_autoscaling_group" "this" {
     delete = var.delete_timeout
   }
 
-  tags = local.tags
+  tags = var.tags
 
   lifecycle {
     create_before_destroy = true

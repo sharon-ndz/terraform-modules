@@ -67,5 +67,5 @@ output "target_group_attachments" {
 
 output "created_sg_id" {
   description = "Created SG ID"
-  value = var.create_sg ? aws_security_group.ec2_security_group.id : ""
+  value = var.create_sg ? concat(aws_security_group.ec2_security_group.*.id, [""])[0] : ""
 }
