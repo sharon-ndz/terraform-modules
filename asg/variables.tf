@@ -3,6 +3,93 @@ variable "asg_tgs" {
   type        = object({})
   default     = {}
 }
+
+################################################################################
+# Instance Profile
+################################################################################
+
+variable "create_iam_role" {
+  type        = bool
+  description = "(optional) create IAM Role or not"
+  default     = false
+}
+
+variable "created_instance_profile_name" {
+    type = string
+    description = "instance profile name"
+}
+
+variable "machine_iam_policies" {
+  type = list(object(
+  	{
+  		policy_name = string,
+  	  statements = list(object({
+        Action   = list(string)
+  		  Effect   = string
+  		  Resource = list(string)
+      }))
+  	}
+  ))
+  default = []
+}
+
+variable "machine_extra_policies_arns" {
+  type = list(string)
+  description = "AWS ARNs for extra policies"
+  default = []
+}
+
+################################################################################
+# Security Group
+################################################################################
+
+variable "create_sg" {
+  type        = bool
+  description = "(optional) create sg or not"
+  default     = false
+}
+
+variable "sg_name" {
+    type        = string
+    description = "(optional) security group name"
+    default     = ""
+}
+
+variable "vpc_id" {
+  description = "The id of the vpc where the SGs created ."
+  type        = string
+}
+
+variable "ingress_roles" {
+  type = list(object({
+      description       = string
+      from_port         = string
+      to_port           = string
+      protocol          = string
+      cidr_blocks       = list(string)
+      ipv6_cidr_blocks  = list(string)
+      security_groups   = list(string)
+      self              = bool
+    }
+  ))
+  default = []
+}
+
+variable "egress_roles" {
+  type = list(object({
+      description       = string
+      from_port         = string
+      to_port           = string
+      protocol          = string
+      cidr_blocks       = list(string)
+      ipv6_cidr_blocks  = list(string)
+      security_groups   = list(string)
+      self              = bool
+    }
+  ))
+  default = []
+}
+
 ################################################################################
 # Autoscaling group
 ################################################################################
@@ -211,12 +298,6 @@ variable "delete_timeout" {
 }
 
 variable "tags" {
-  description = "A list of tag blocks. Each element should have keys named key, value, and propagate_at_launch"
-  type        = list(map(string))
-  default     = []
-}
-
-variable "tags_as_map" {
   description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
   type        = map(string)
   default     = {}
@@ -295,13 +376,13 @@ variable "metadata_options" {
 variable "create_lt" {
   description = "Determines whether to create launch template or not"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "use_lt" {
   description = "Determines whether to use a launch template in the autoscaling group or not"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "lt_name" {
@@ -313,7 +394,7 @@ variable "lt_name" {
 variable "lt_use_name_prefix" {
   description = "Determines whether to use `lt_name` as is or create a unique name beginning with the `lt_name` as the prefix"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "description" {
@@ -449,7 +530,7 @@ variable "tag_specifications" {
 variable "create_schedule" {
   description = "Determines whether to create autoscaling group schedule or not"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "schedules" {
@@ -466,7 +547,7 @@ variable "schedules" {
 variable "create_scaling_policy" {
   description = "Determines whether to create target scaling policy schedule or not"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "scaling_policies" {

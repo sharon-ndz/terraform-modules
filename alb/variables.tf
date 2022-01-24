@@ -224,3 +224,49 @@ variable "record_ttl" {
   type = string
   default = ""
 }
+
+#####################################################################################################################################
+#####################################################    Security Group     #########################################################
+#####################################################################################################################################
+
+variable "create_sg" {
+  type        = bool
+  description = "(optional) create sg or not"
+  default     = false
+}
+
+variable "sg_name" {
+    type        = string
+    description = "(optional) security group name"
+    default     = ""
+}
+
+variable "ingress_roles" {
+  type = list(object({
+      description       = string
+      from_port         = string
+      to_port           = string
+      protocol          = string
+      cidr_blocks       = list(string)
+      ipv6_cidr_blocks  = list(string)
+      security_groups   = list(string)
+      self              = bool
+    }
+  ))
+  default = []
+}
+
+variable "egress_roles" {
+  type = list(object({
+      description       = string
+      from_port         = string
+      to_port           = string
+      protocol          = string
+      cidr_blocks       = list(string)
+      ipv6_cidr_blocks  = list(string)
+      security_groups   = list(string)
+      self              = bool
+    }
+  ))
+  default = []
+}

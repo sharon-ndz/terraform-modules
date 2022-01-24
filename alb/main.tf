@@ -1,3 +1,38 @@
+resource "aws_security_group" "ec2_security_group" {
+  count       = var.create_sg ? 1 : 0
+  name        = var.sg_name
+  description = "EC2 SG for ${var.sg_name}"
+  vpc_id      = var.vpc_id
+
+  dynamic "ingress" {
+    for_each = var.ingress_roles
+    content {
+        description         = lookup(ingress.value, "description", null)
+        from_port           = lookup(ingress.value, "from_port", null)
+        to_port             = lookup(ingress.value, "to_port", null)
+        protocol            = lookup(ingress.value, "protocol", null)
+        cidr_blocks         = lookup(ingress.value, "cidr_blocks", null)
+        ipv6_cidr_blocks    = lookup(ingress.value, "ipv6_cidr_blocks", null)
+        security_groups     = lookup(ingress.value, "security_groups", null)
+        self                = lookup(ingress.value, "self", null)
+    }
+  }
+
+  dynamic "egress" {
+    for_each = var.egress_roles
+    content {
+        description         = lookup(egress.value, "description", null)
+        from_port           = lookup(egress.value, "from_port", null)
+        to_port             = lookup(egress.value, "to_port", null)
+        protocol            = lookup(egress.value, "protocol", null)
+        cidr_blocks         = lookup(egress.value, "cidr_blocks", null)
+        ipv6_cidr_blocks    = lookup(egress.value, "ipv6_cidr_blocks", null)
+        security_groups     = lookup(egress.value, "security_groups", null)
+        self                = lookup(egress.value, "self", null)
+    }
+  }
+}
+
 resource "aws_lb" "this" {
   count = var.create_lb ? 1 : 0
 
@@ -6,7 +41,7 @@ resource "aws_lb" "this" {
 
   load_balancer_type               = var.load_balancer_type
   internal                         = var.internal
-  security_groups                  = var.security_groups
+  security_groups                  = var.create_sg ? concat([aws_security_group.ec2_security_group[0].id], var.security_groups) : var.security_groups
   subnets                          = var.subnets
 
   idle_timeout                     = var.idle_timeout

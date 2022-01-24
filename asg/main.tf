@@ -1,21 +1,95 @@
 ################################################################################
+# Instance Profile
+################################################################################
+
+resource "aws_iam_role" "ec2_iam_role" {
+  count       = var.create_iam_role ? 1 : 0
+
+  name               = var.created_instance_profile_name
+  assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
+
+  dynamic "inline_policy" {
+    for_each = var.machine_iam_policies
+
+    content {
+        name = lookup(inline_policy.value, "policy_name", null)
+
+        policy = jsonencode({
+          Version = "2012-10-17"
+          Statement = inline_policy.value.statements
+        })
+    }
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "role_policies" {
+  count      = length(var.machine_extra_policies_arns)
+  role       = aws_iam_role.ec2_iam_role.name
+  policy_arn = var.machine_extra_policies_arns[count.index]
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = var.created_instance_profile_name
+  role = aws_iam_role.ec2_iam_role.name
+}
+
+################################################################################
+# Security Group
+################################################################################
+
+resource "aws_security_group" "ec2_security_group" {
+  count       = var.create_sg ? 1 : 0
+  name        = var.sg_name
+  description = "EC2 SG for ${var.sg_name}"
+  vpc_id      = var.vpc_id
+
+  dynamic "ingress" {
+    for_each = var.ingress_roles
+    content {
+        description         = lookup(ingress.value, "description", null)
+        from_port           = lookup(ingress.value, "from_port", null)
+        to_port             = lookup(ingress.value, "to_port", null)
+        protocol            = lookup(ingress.value, "protocol", null)
+        cidr_blocks         = lookup(ingress.value, "cidr_blocks", null)
+        ipv6_cidr_blocks    = lookup(ingress.value, "ipv6_cidr_blocks", null)
+        security_groups     = lookup(ingress.value, "security_groups", null)
+        self                = lookup(ingress.value, "self", null)
+    }
+  }
+
+  dynamic "egress" {
+    for_each = var.egress_roles
+    content {
+        description         = lookup(egress.value, "description", null)
+        from_port           = lookup(egress.value, "from_port", null)
+        to_port             = lookup(egress.value, "to_port", null)
+        protocol            = lookup(egress.value, "protocol", null)
+        cidr_blocks         = lookup(egress.value, "cidr_blocks", null)
+        ipv6_cidr_blocks    = lookup(egress.value, "ipv6_cidr_blocks", null)
+        security_groups     = lookup(egress.value, "security_groups", null)
+        self                = lookup(egress.value, "self", null)
+    }
+  }
+}
+
+################################################################################
 # Launch template
 ################################################################################
 
 resource "aws_launch_template" "this" {
   count = var.create_lt ? 1 : 0
 
-  name        = var.lt_use_name_prefix ? null : local.lt_name
-  name_prefix = var.lt_use_name_prefix ? "${local.lt_name}-" : null
-  description = var.description
+  name                                 = var.lt_use_name_prefix ? null : local.lt_name
+  name_prefix                          = var.lt_use_name_prefix ? "${local.lt_name}-" : null
+  description                          = var.description
 
-  ebs_optimized = var.ebs_optimized
-  image_id      = var.image_id
-  instance_type = var.instance_type
-  key_name      = var.key_name
-  user_data     = var.user_data_base64
+  ebs_optimized                        = var.ebs_optimized
+  image_id                             = var.image_id
+  instance_type                        = var.instance_type
+  key_name                             = var.key_name
+  user_data                            = var.user_data_base64
 
-  vpc_security_group_ids = var.security_groups
+  vpc_security_group_ids               = var.create_sg ? concat([aws_security_group.ec2_security_group[0].id], var.security_groups) : var.security_groups
 
   default_version                      = var.default_version
   update_default_version               = var.update_default_version
@@ -105,10 +179,10 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "iam_instance_profile" {
-    for_each = var.iam_instance_profile_name != null || var.iam_instance_profile_arn != null ? [1] : []
+    for_each = var.iam_instance_profile_name != null || var.iam_instance_profile_arn != null || var.create_iam_role ? [1] : []
     content {
-      name = var.iam_instance_profile_name
-      arn  = var.iam_instance_profile_arn
+      name = var.create_iam_role ? aws_iam_instance_profile.ec2_profile.name : var.iam_instance_profile_name
+      arn  = var.create_iam_role ? aws_iam_instance_profile.ec2_profile.arn  : var.iam_instance_profile_arn
     }
   }
 
@@ -202,7 +276,7 @@ resource "aws_launch_template" "this" {
     create_before_destroy = true
   }
 
-  tags = var.tags_as_map
+  tags = var.tags
 }
 
 ################################################################################

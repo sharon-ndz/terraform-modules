@@ -64,3 +64,8 @@ output "target_group_attachments" {
     for k, v in aws_lb_target_group_attachment.this : k => v.id
   }
 }
+
+output "created_sg_id" {
+  description = "Created SG ID"
+  value = var.create_sg ? aws_security_group.ec2_security_group.id : ""
+}
