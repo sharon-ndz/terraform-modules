@@ -24,13 +24,13 @@ resource "aws_iam_role" "ec2_iam_role" {
 
 resource "aws_iam_role_policy_attachment" "role_policies" {
   count      = length(var.machine_extra_policies_arns)
-  role       = aws_iam_role.ec2_iam_role.name
+  role       = aws_iam_role.ec2_iam_role[0].name
   policy_arn = var.machine_extra_policies_arns[count.index]
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = var.created_instance_profile_name
-  role = aws_iam_role.ec2_iam_role.name
+  role = aws_iam_role.ec2_iam_role[0].name
 }
 
 ################################################################################
