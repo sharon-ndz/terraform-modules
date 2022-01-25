@@ -46,25 +46,7 @@ variable "bucket_name" {
 }
 
 variable "bucket_policy" {
-  type = list(object({
-    sid = string
-
-    principals = object({
-      type        = string
-      identifiers = list(string)
-    })
-
-    effect = string
-    actions = list(string)
-    resources = list(string)
-
-    condition = list(object({
-      test     = string
-      variable = string
-      values   = list(string)
-    }))
-
-   }))
-   default = []
+  type = list(any)
+  default = []
 }
 ###############################
