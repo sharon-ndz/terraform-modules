@@ -561,3 +561,57 @@ variable "scaling_policies" {
   type        = any
   default     = {}
 }
+
+#################################################################################
+# Target Groups
+#################################################################################
+variable "target_groups" {
+  description = "A list of maps containing key/value pairs that define the target groups to be created. Order of these maps is important and the index of these are to be referenced in listener definitions. Required key/values: name, backend_protocol, backend_port"
+  type        = any
+  default     = []
+}
+
+#################################################################################
+# HTTTP Listener Rules
+#################################################################################
+variable "http_tcp_listener_rules" {
+  description = "A list of maps describing the Listener Rules for this ALB. Required key/values: actions, conditions. Optional key/values: priority, http_tcp_listener_index (default to http_tcp_listeners[count.index])"
+  type        = any
+  default     = []
+}
+
+#################################################################################
+# HTTTPS Listener Rules
+#################################################################################
+variable "https_listener_rules" {
+  description = "A list of maps describing the Listener Rules for this ALB. Required key/values: actions, conditions. Optional key/values: priority, https_listener_index (default to https_listeners[count.index])"
+  type        = any
+  default     = []
+}
+
+#################################################################################
+# HTTTP Listeners
+#################################################################################
+variable "http_tcp_listeners" {
+  description = "A list of maps describing the HTTP listeners or TCP ports for this ALB. Required key/values: port, protocol. Optional key/values: target_group_index (defaults to http_tcp_listeners[count.index])"
+  type        = any
+  default     = []
+}
+
+#################################################################################
+# HTTTPS Listeners
+#################################################################################
+variable "https_listeners" {
+  description = "A list of maps describing the HTTPS listeners for this ALB. Required key/values: port, certificate_arn. Optional key/values: ssl_policy (defaults to ELBSecurityPolicy-2016-08), target_group_index (defaults to https_listeners[count.index])"
+  type        = any
+  default     = []
+}
+
+#################################################################################
+# Extra SSL Certs
+#################################################################################
+variable "extra_ssl_certs" {
+  description = "A list of maps describing any extra SSL certificates to apply to the HTTPS listeners. Required key/values: certificate_arn, https_listener_index (the index of the listener within https_listeners which the cert applies toward)."
+  type        = list(map(string))
+  default     = []
+}
