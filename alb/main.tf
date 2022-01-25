@@ -1,4 +1,4 @@
-resource "aws_security_group" "ec2_security_group" {
+resource "aws_security_group" "alb_security_group" {
   count       = var.create_sg ? 1 : 0
   name        = var.sg_name
   description = "EC2 SG for ${var.sg_name}"
