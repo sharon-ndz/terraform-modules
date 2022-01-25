@@ -139,6 +139,7 @@ variable "script" {
   type    = string
   default = ""
 }
+
 variable "common_tags" {
   type = map(string)
 }
