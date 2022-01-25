@@ -1,7 +1,13 @@
 variable "asg_tgs" {
-  description = "asg realted tags"
-  type        = object({})
-  default     = {}
+  description = "A list of tag blocks. Each element should have keys named key, value, and propagate_at_launch"
+  type        = list(map(string))
+  default     = []
+}
+
+variable "propagate_common_tags_at_launch" {
+  description = "wheter propagate common tags at machines launched from ASG"
+  type        = bool
+  default     = false
 }
 
 ################################################################################
