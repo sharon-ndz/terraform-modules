@@ -41,7 +41,7 @@ resource "aws_lb" "this" {
 
   load_balancer_type               = var.load_balancer_type
   internal                         = var.internal
-  security_groups                  = var.create_sg ? concat([aws_security_group.ec2_security_group[0].id], var.security_groups) : var.security_groups
+  security_groups                  = var.create_sg ? concat([aws_security_group.alb_security_group[0].id], var.security_groups) : var.security_groups
   subnets                          = var.subnets
 
   idle_timeout                     = var.idle_timeout
