@@ -65,6 +65,6 @@ variable "bucket_policy" {
     }))
 
    }))
-   default = []
+  default = []
 }
 ###############################

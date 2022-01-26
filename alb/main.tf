@@ -1,7 +1,7 @@
 resource "aws_security_group" "alb_security_group" {
   count       = var.create_sg ? 1 : 0
   name        = var.sg_name
-  description = "EC2 SG for ${var.sg_name}"
+  description = "EC2 SG for ${var.name != null ? var.name : var.name_prefix}"
   vpc_id      = var.vpc_id
 
   dynamic "ingress" {
