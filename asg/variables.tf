@@ -207,12 +207,6 @@ variable "load_balancers" {
   default     = []
 }
 
-variable "target_group_arns" {
-  description = "A set of `aws_alb_target_group` ARNs, for use with Application or Network Load Balancing"
-  type        = list(string)
-  default     = []
-}
-
 variable "placement_group" {
   description = "The name of the placement group into which you'll launch your instances, if any"
   type        = string
@@ -614,4 +608,45 @@ variable "extra_ssl_certs" {
   description = "A list of maps describing any extra SSL certificates to apply to the HTTPS listeners. Required key/values: certificate_arn, https_listener_index (the index of the listener within https_listeners which the cert applies toward)."
   type        = list(map(string))
   default     = []
+}
+
+variable "lb_arn" {
+  description = "LB ARN"
+  type        = string
+}
+
+variable "target_group_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
+
+variable "https_listener_rules_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
+
+variable "http_tcp_listener_rules_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
+
+variable "http_tcp_listeners_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
+
+variable "https_listeners_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
+
+variable "listener_ssl_policy_default" {
+  description = "The security policy if using HTTPS externally on the load balancer. [See](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-policy-table.html)."
+  type        = string
+  default     = "ELBSecurityPolicy-2016-08"
 }

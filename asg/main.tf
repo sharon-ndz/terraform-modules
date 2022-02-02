@@ -86,7 +86,7 @@ resource "aws_launch_template" "this" {
   key_name                             = var.key_name
   user_data                            = var.user_data_base64
 
-  vpc_security_group_ids               = var.create_sg ? concat([aws_security_group.asg_security_group[0].id], var.security_groups) : var.security_groups
+  vpc_security_group_ids               = var.create_sg ? concat([aws_security_group.asg_security_group[0].id], var.security_groups != null ? var.security_groups : []) : var.security_groups
 
   default_version                      = var.default_version
   update_default_version               = var.update_default_version
@@ -179,7 +179,6 @@ resource "aws_launch_template" "this" {
     for_each = var.iam_instance_profile_name != null || var.iam_instance_profile_arn != null || var.create_iam_role ? [1] : []
     content {
       name = var.create_iam_role ? aws_iam_instance_profile.ec2_profile.name : var.iam_instance_profile_name
-      arn  = var.create_iam_role ? aws_iam_instance_profile.ec2_profile.arn  : var.iam_instance_profile_arn
     }
   }
 
@@ -308,7 +307,7 @@ resource "aws_autoscaling_group" "this" {
   protect_from_scale_in     = var.protect_from_scale_in
 
   load_balancers            = var.load_balancers
-  target_group_arns         = var.target_group_arns
+  target_group_arns         = aws_lb_target_group.main.*.arn
   placement_group           = var.placement_group
   health_check_type         = var.health_check_type
   health_check_grace_period = var.health_check_grace_period
@@ -1030,7 +1029,7 @@ resource "aws_lb_listener_rule" "http_tcp_listener_rule" {
 resource "aws_lb_listener" "frontend_http_tcp" {
   count = length(var.http_tcp_listeners)
 
-  load_balancer_arn = aws_lb.this[0].arn
+  load_balancer_arn = var.lb_arn
 
   port              = var.http_tcp_listeners[count.index]["port"]
   protocol          = var.http_tcp_listeners[count.index]["protocol"]
@@ -1081,7 +1080,7 @@ resource "aws_lb_listener" "frontend_http_tcp" {
 resource "aws_lb_listener" "frontend_https" {
   count = length(var.https_listeners)
 
-  load_balancer_arn = aws_lb.this[0].arn
+  load_balancer_arn = var.lb_arn
 
   port              = var.https_listeners[count.index]["port"]
   protocol          = lookup(var.https_listeners[count.index], "protocol", "HTTPS")
