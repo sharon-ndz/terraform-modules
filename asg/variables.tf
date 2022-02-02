@@ -614,3 +614,33 @@ variable "lb_arn" {
   description = "LB ARN"
   type        = string
 }
+
+variable "target_group_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
+
+variable "https_listener_rules_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
+
+variable "http_tcp_listener_rules_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
+
+variable "http_tcp_listeners_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
+
+variable "https_listeners_tags" {
+  description = "A map of tags and values in the same format as other resources accept. This will be converted into the non-standard format that the aws_autoscaling_group requires."
+  type        = map(string)
+  default     = {}
+}
