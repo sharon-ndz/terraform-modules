@@ -40,12 +40,6 @@ variable "ip_address_type" {
   default     = "ipv4"
 }
 
-variable "listener_ssl_policy_default" {
-  description = "The security policy if using HTTPS externally on the load balancer. [See](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-policy-table.html)."
-  type        = string
-  default     = "ELBSecurityPolicy-2016-08"
-}
-
 variable "internal" {
   description = "Boolean determining if the load balancer is internal or externally facing."
   type        = bool
@@ -60,6 +54,12 @@ variable "load_balancer_create_timeout" {
 
 variable "load_balancer_delete_timeout" {
   description = "Timeout value when deleting the ALB."
+  type        = string
+  default     = "10m"
+}
+
+variable "load_balancer_update_timeout" {
+  description = "Timeout value when updating the ALB."
   type        = string
   default     = "10m"
 }
@@ -80,12 +80,6 @@ variable "load_balancer_type" {
   description = "The type of load balancer to create. Possible values are application or network."
   type        = string
   default     = "application"
-}
-
-variable "load_balancer_update_timeout" {
-  description = "Timeout value when updating the ALB."
-  type        = string
-  default     = "10m"
 }
 
 variable "access_logs" {

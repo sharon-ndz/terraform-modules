@@ -644,3 +644,9 @@ variable "https_listeners_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "listener_ssl_policy_default" {
+  description = "The security policy if using HTTPS externally on the load balancer. [See](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-policy-table.html)."
+  type        = string
+  default     = "ELBSecurityPolicy-2016-08"
+}
