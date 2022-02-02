@@ -86,7 +86,7 @@ resource "aws_launch_template" "this" {
   key_name                             = var.key_name
   user_data                            = var.user_data_base64
 
-  vpc_security_group_ids               = var.create_sg ? concat([aws_security_group.asg_security_group[0].id], var.security_groups) : var.security_groups
+  vpc_security_group_ids               = var.create_sg ? concat([aws_security_group.asg_security_group[0].id], var.security_groups != null ? var.security_groups : []) : var.security_groups
 
   default_version                      = var.default_version
   update_default_version               = var.update_default_version
