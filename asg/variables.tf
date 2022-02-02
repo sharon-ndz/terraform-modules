@@ -615,3 +615,8 @@ variable "extra_ssl_certs" {
   type        = list(map(string))
   default     = []
 }
+
+variable "lb_arn" {
+  description = "LB ARN"
+  type        = string
+}

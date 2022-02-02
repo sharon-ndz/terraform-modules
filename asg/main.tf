@@ -1030,7 +1030,7 @@ resource "aws_lb_listener_rule" "http_tcp_listener_rule" {
 resource "aws_lb_listener" "frontend_http_tcp" {
   count = length(var.http_tcp_listeners)
 
-  load_balancer_arn = aws_lb.this[0].arn
+  load_balancer_arn = var.lb_arn
 
   port              = var.http_tcp_listeners[count.index]["port"]
   protocol          = var.http_tcp_listeners[count.index]["protocol"]
@@ -1081,7 +1081,7 @@ resource "aws_lb_listener" "frontend_http_tcp" {
 resource "aws_lb_listener" "frontend_https" {
   count = length(var.https_listeners)
 
-  load_balancer_arn = aws_lb.this[0].arn
+  load_balancer_arn = var.lb_arn
 
   port              = var.https_listeners[count.index]["port"]
   protocol          = lookup(var.https_listeners[count.index], "protocol", "HTTPS")
