@@ -179,7 +179,6 @@ resource "aws_launch_template" "this" {
     for_each = var.iam_instance_profile_name != null || var.iam_instance_profile_arn != null || var.create_iam_role ? [1] : []
     content {
       name = var.create_iam_role ? aws_iam_instance_profile.ec2_profile.name : var.iam_instance_profile_name
-      arn  = var.create_iam_role ? aws_iam_instance_profile.ec2_profile.arn  : var.iam_instance_profile_arn
     }
   }
 
