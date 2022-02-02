@@ -207,12 +207,6 @@ variable "load_balancers" {
   default     = []
 }
 
-variable "target_group_arns" {
-  description = "A set of `aws_alb_target_group` ARNs, for use with Application or Network Load Balancing"
-  type        = list(string)
-  default     = []
-}
-
 variable "placement_group" {
   description = "The name of the placement group into which you'll launch your instances, if any"
   type        = string

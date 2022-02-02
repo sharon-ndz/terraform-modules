@@ -308,7 +308,7 @@ resource "aws_autoscaling_group" "this" {
   protect_from_scale_in     = var.protect_from_scale_in
 
   load_balancers            = var.load_balancers
-  target_group_arns         = var.target_group_arns
+  target_group_arns         = aws_lb_target_group.main.*.arn
   placement_group           = var.placement_group
   health_check_type         = var.health_check_type
   health_check_grace_period = var.health_check_grace_period
