@@ -41,7 +41,7 @@ resource "aws_lambda_function" "route53_backup_lambda" {
   role          = aws_iam_role.route53_backup_role.arn
   handler       = "route53_backup_lambda.handler"
   runtime       = "python3.6"
-  timeout       = 15
+  timeout       = 900
   memory_size   = 128
   tags          = merge(local.tags)
 
