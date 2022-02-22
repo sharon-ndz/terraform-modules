@@ -8,11 +8,6 @@ WORKDIR /code
 
 ENV DEBIAN_FRONTEND noninteractive
 # install dependencies
-#RUN apt-get update -y
-#RUN apt-get install python 3.10 -y
-#RUN apt-get install vim -y
-#RUN apt-get install python3-pip -y
-#RUN python3 -m pip install --upgrade pip
 
 # copy the dependencies file to the working directory
 COPY requirements.txt .
