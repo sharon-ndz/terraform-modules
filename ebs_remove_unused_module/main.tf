@@ -23,17 +23,12 @@ data "aws_iam_policy_document" "default" {
 data "aws_iam_policy_document" "ebs-unused" {
   statement {
     actions = [
-      "cloudtrail:LookupEvents",
-      "cloudtrail:StartLogging",
-      "cloudtrail:GetTrailStatus",
       "logs:CreateLogGroup",
       "logs:PutLogEvents",
       "ec2:DeleteVolume",
-      "cloudtrail:DescribeTrails",
       "ec2:DescribeVolumeAttribute",
       "logs:CreateLogStream",
       "ec2:DescribeVolumeStatus",
-      "cloudtrail:CreateTrail",
       "ec2:DescribeVolumes",
       "kms:Decrypt"
     ]
