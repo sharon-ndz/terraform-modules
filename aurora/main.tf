@@ -147,11 +147,6 @@ resource "aws_db_parameter_group" "db_parameter_group" {
   family      = "aurora-mysql5.7"
   description = "${var.db_parameter_group_name}-parameter-group"
   tags        = var.tags
-
-  parameter {
-  name  = "time_zone"
-  value = "US/Eastern"
-  }
 }
 
 resource "aws_rds_cluster_instance" "this" {
