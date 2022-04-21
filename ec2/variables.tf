@@ -132,7 +132,7 @@ variable "secondary_private_ips" {
 variable "private_ip" {
   type        = string
   description = "private ip"
-  default     = ""
+  default     = null
 }
 
 variable "script" {
