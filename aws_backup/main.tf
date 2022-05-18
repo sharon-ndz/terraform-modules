@@ -1,7 +1,3 @@
-provider "aws" {
-  profile = "default"
-  region  = var.region
-}
 resource "aws_backup_vault" "this" {
   name        = var.backup_vault_name
   kms_key_arn = var.kms_key_arn
