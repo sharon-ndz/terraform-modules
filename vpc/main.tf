@@ -38,17 +38,17 @@ resource "aws_route_table" "public_routes" {
   dynamic "route" {
     for_each = lookup(var.public_subnets, "routes", [])
     content {
-      cidr_block                = lookup(route.value, "cidr_block", "")
-      egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", "")
-      gateway_id                = lookup(route.value, "gateway_id", "")
-      instance_id               = lookup(route.value, "instance_id", "")
-      ipv6_cidr_block           = lookup(route.value, "ipv6_cidr_block", "")
-      local_gateway_id          = lookup(route.value, "local_gateway_id", "")
-      nat_gateway_id            = lookup(route.value, "nat_gateway_id", "")
-      network_interface_id      = lookup(route.value, "network_interface_id", "")
-      transit_gateway_id        = lookup(route.value, "transit_gateway_id", "")
-      vpc_endpoint_id           = lookup(route.value, "vpc_endpoint_id", "")
-      vpc_peering_connection_id = lookup(route.value, "vpc_peering_connection_id", "")
+      cidr_block                = lookup(each.value, "cidr_block", "")
+      egress_only_gateway_id    = lookup(each.value, "egress_only_gateway_id", "")
+      gateway_id                = lookup(each.value, "gateway_id", "")
+      instance_id               = lookup(each.value, "instance_id", "")
+      ipv6_cidr_block           = lookup(each.value, "ipv6_cidr_block", "")
+      local_gateway_id          = lookup(each.value, "local_gateway_id", "")
+      nat_gateway_id            = lookup(each.value, "nat_gateway_id", "")
+      network_interface_id      = lookup(each.value, "network_interface_id", "")
+      transit_gateway_id        = lookup(each.value, "transit_gateway_id", "")
+      vpc_endpoint_id           = lookup(each.value, "vpc_endpoint_id", "")
+      vpc_peering_connection_id = lookup(each.value, "vpc_peering_connection_id", "")
     }
   }
 
@@ -133,17 +133,17 @@ resource "aws_route_table" "private_lb_subnets_rt" {
   dynamic "route" {
     for_each = lookup(var.private_lb_subnets, "routes", [])
     content {
-      cidr_block                = lookup(route.value, "cidr_block", "")
-      egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", "")
-      gateway_id                = lookup(route.value, "gateway_id", "")
-      instance_id               = lookup(route.value, "instance_id", "")
-      ipv6_cidr_block           = lookup(route.value, "ipv6_cidr_block", "")
-      local_gateway_id          = lookup(route.value, "local_gateway_id", "")
-      nat_gateway_id            = lookup(route.value, "nat_gateway_id", "")
-      network_interface_id      = lookup(route.value, "network_interface_id", "")
-      transit_gateway_id        = lookup(route.value, "transit_gateway_id", "")
-      vpc_endpoint_id           = lookup(route.value, "vpc_endpoint_id", "")
-      vpc_peering_connection_id = lookup(route.value, "vpc_peering_connection_id", "")
+      cidr_block                = lookup(each.value, "cidr_block", "")
+      egress_only_gateway_id    = lookup(each.value, "egress_only_gateway_id", "")
+      gateway_id                = lookup(each.value, "gateway_id", "")
+      instance_id               = lookup(each.value, "instance_id", "")
+      ipv6_cidr_block           = lookup(each.value, "ipv6_cidr_block", "")
+      local_gateway_id          = lookup(each.value, "local_gateway_id", "")
+      nat_gateway_id            = lookup(each.value, "nat_gateway_id", "")
+      network_interface_id      = lookup(each.value, "network_interface_id", "")
+      transit_gateway_id        = lookup(each.value, "transit_gateway_id", "")
+      vpc_endpoint_id           = lookup(each.value, "vpc_endpoint_id", "")
+      vpc_peering_connection_id = lookup(each.value, "vpc_peering_connection_id", "")
     }
   }
 
@@ -163,17 +163,17 @@ resource "aws_route_table" "private_app_subnets_rt" {
   dynamic "route" {
     for_each = lookup(var.private_app_subnets, "routes", [])
     content {
-      cidr_block                = lookup(route.value, "cidr_block", "")
-      egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", "")
-      gateway_id                = lookup(route.value, "gateway_id", "")
-      instance_id               = lookup(route.value, "instance_id", "")
-      ipv6_cidr_block           = lookup(route.value, "ipv6_cidr_block", "")
-      local_gateway_id          = lookup(route.value, "local_gateway_id", "")
-      nat_gateway_id            = lookup(route.value, "nat_gateway_id", "")
-      network_interface_id      = lookup(route.value, "network_interface_id", "")
-      transit_gateway_id        = lookup(route.value, "transit_gateway_id", "")
-      vpc_endpoint_id           = lookup(route.value, "vpc_endpoint_id", "")
-      vpc_peering_connection_id = lookup(route.value, "vpc_peering_connection_id", "")
+      cidr_block                = lookup(each.value, "cidr_block", "")
+      egress_only_gateway_id    = lookup(each.value, "egress_only_gateway_id", "")
+      gateway_id                = lookup(each.value, "gateway_id", "")
+      instance_id               = lookup(each.value, "instance_id", "")
+      ipv6_cidr_block           = lookup(each.value, "ipv6_cidr_block", "")
+      local_gateway_id          = lookup(each.value, "local_gateway_id", "")
+      nat_gateway_id            = lookup(each.value, "nat_gateway_id", "")
+      network_interface_id      = lookup(each.value, "network_interface_id", "")
+      transit_gateway_id        = lookup(each.value, "transit_gateway_id", "")
+      vpc_endpoint_id           = lookup(each.value, "vpc_endpoint_id", "")
+      vpc_peering_connection_id = lookup(each.value, "vpc_peering_connection_id", "")
     }
   }
 
@@ -194,17 +194,17 @@ resource "aws_route_table" "private_data_subnets_rt" {
   dynamic "route" {
     for_each = lookup(var.private_data_subnets, "routes", [])
     content {
-      cidr_block                = lookup(route.value, "cidr_block", "")
-      egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", "")
-      gateway_id                = lookup(route.value, "gateway_id", "")
-      instance_id               = lookup(route.value, "instance_id", "")
-      ipv6_cidr_block           = lookup(route.value, "ipv6_cidr_block", "")
-      local_gateway_id          = lookup(route.value, "local_gateway_id", "")
-      nat_gateway_id            = lookup(route.value, "nat_gateway_id", "")
-      network_interface_id      = lookup(route.value, "network_interface_id", "")
-      transit_gateway_id        = lookup(route.value, "transit_gateway_id", "")
-      vpc_endpoint_id           = lookup(route.value, "vpc_endpoint_id", "")
-      vpc_peering_connection_id = lookup(route.value, "vpc_peering_connection_id", "")
+      cidr_block                = lookup(each.value, "cidr_block", "")
+      egress_only_gateway_id    = lookup(each.value, "egress_only_gateway_id", "")
+      gateway_id                = lookup(each.value, "gateway_id", "")
+      instance_id               = lookup(each.value, "instance_id", "")
+      ipv6_cidr_block           = lookup(each.value, "ipv6_cidr_block", "")
+      local_gateway_id          = lookup(each.value, "local_gateway_id", "")
+      nat_gateway_id            = lookup(each.value, "nat_gateway_id", "")
+      network_interface_id      = lookup(each.value, "network_interface_id", "")
+      transit_gateway_id        = lookup(each.value, "transit_gateway_id", "")
+      vpc_endpoint_id           = lookup(each.value, "vpc_endpoint_id", "")
+      vpc_peering_connection_id = lookup(each.value, "vpc_peering_connection_id", "")
     }
   }
 
@@ -224,17 +224,17 @@ resource "aws_route_table" "private_services_subnets_rt" {
   dynamic "route" {
     for_each = lookup(var.private_services_subnets, "routes", [])
     content {
-      cidr_block                = lookup(route.value, "cidr_block", "")
-      egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", "")
-      gateway_id                = lookup(route.value, "gateway_id", "")
-      instance_id               = lookup(route.value, "instance_id", "")
-      ipv6_cidr_block           = lookup(route.value, "ipv6_cidr_block", "")
-      local_gateway_id          = lookup(route.value, "local_gateway_id", "")
-      nat_gateway_id            = lookup(route.value, "nat_gateway_id", "")
-      network_interface_id      = lookup(route.value, "network_interface_id", "")
-      transit_gateway_id        = lookup(route.value, "transit_gateway_id", "")
-      vpc_endpoint_id           = lookup(route.value, "vpc_endpoint_id", "")
-      vpc_peering_connection_id = lookup(route.value, "vpc_peering_connection_id", "")
+      cidr_block                = lookup(each.value, "cidr_block", "")
+      egress_only_gateway_id    = lookup(each.value, "egress_only_gateway_id", "")
+      gateway_id                = lookup(each.value, "gateway_id", "")
+      instance_id               = lookup(each.value, "instance_id", "")
+      ipv6_cidr_block           = lookup(each.value, "ipv6_cidr_block", "")
+      local_gateway_id          = lookup(each.value, "local_gateway_id", "")
+      nat_gateway_id            = lookup(each.value, "nat_gateway_id", "")
+      network_interface_id      = lookup(each.value, "network_interface_id", "")
+      transit_gateway_id        = lookup(each.value, "transit_gateway_id", "")
+      vpc_endpoint_id           = lookup(each.value, "vpc_endpoint_id", "")
+      vpc_peering_connection_id = lookup(each.value, "vpc_peering_connection_id", "")
     }
   }
 
