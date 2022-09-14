@@ -18,6 +18,41 @@ resource "random_password" "master_password" {
   special = false
 }
 
+## Left Secret Manager below for case we decide to use it instead of 
+## preserving passwords in Parameter Store
+
+## Secret Manager secret parameter
+#resource "aws_secretsmanager_secret" "creds" {
+#  name = "${var.name}-creds"
+#
+#  tags = {
+#    Provisioner = "terraform"
+#  }
+#}
+#
+## Secret Manager secret for master_password
+#resource "aws_secretsmanager_secret_version" "creds-val" {
+#  secret_id = aws_secretsmanager_secret.creds.id
+#  # encode in the required format
+#  secret_string = jsonencode(
+#    {
+#      username = aws_rds_cluster.this[0].master_username
+#      password = local.master_password
+#      host     = aws_rds_cluster.this[0].endpoint
+#    }
+#  )
+#}
+
+resource "aws_ssm_parameter" "secret" {
+  name  = "${var.name}-creds"
+  type  = "SecureString"
+  value = local.master_password
+
+  tags = {
+    Provisioner = "terraform"
+  }
+}
+
 resource "random_id" "snapshot_identifier" {
   count = var.create_cluster ? 1 : 0
 
@@ -29,7 +64,7 @@ resource "random_id" "snapshot_identifier" {
 }
 
 resource "aws_db_subnet_group" "this" {
-  count       = var.create_cluster && var.create_db_subnet_group ? 1 : 0
+  count = var.create_cluster && var.create_db_subnet_group ? 1 : 0
 
   name        = local.internal_db_subnet_group_name
   description = "For Aurora cluster ${var.name}"
@@ -45,19 +80,19 @@ resource "aws_rds_cluster_parameter_group" "cluster_parameter_group" {
   tags        = var.tags
 
   parameter {
-  name  = "time_zone"
-  value = "US/Eastern"
+    name  = "time_zone"
+    value = "US/Eastern"
   }
 }
 
 resource "aws_rds_cluster" "this" {
   count = var.create_cluster ? 1 : 0
 
-  global_cluster_identifier           = var.global_cluster_identifier
-  enable_global_write_forwarding      = var.enable_global_write_forwarding
-  cluster_identifier                  = var.name
-  replication_source_identifier       = var.replication_source_identifier
-  source_region                       = var.source_region
+  global_cluster_identifier      = var.global_cluster_identifier
+  enable_global_write_forwarding = var.enable_global_write_forwarding
+  cluster_identifier             = var.name
+  replication_source_identifier  = var.replication_source_identifier
+  source_region                  = var.source_region
 
   engine                              = var.engine
   engine_mode                         = var.engine_mode
@@ -305,28 +340,28 @@ resource "aws_security_group" "this" {
   dynamic "ingress" {
     for_each = var.security_group_ingress_rules
     content {
-        description         = lookup(ingress.value, "description", null)
-        from_port           = lookup(ingress.value, "from_port", local.port)
-        to_port             = lookup(ingress.value, "to_port", local.port)
-        protocol            = lookup(ingress.value, "protocol", null)
-        cidr_blocks         = lookup(ingress.value, "cidr_blocks", null)
-        ipv6_cidr_blocks    = lookup(ingress.value, "ipv6_cidr_blocks", null)
-        security_groups     = lookup(ingress.value, "security_groups", null)
-        self                = lookup(ingress.value, "self", null)
+      description      = lookup(ingress.value, "description", null)
+      from_port        = lookup(ingress.value, "from_port", local.port)
+      to_port          = lookup(ingress.value, "to_port", local.port)
+      protocol         = lookup(ingress.value, "protocol", null)
+      cidr_blocks      = lookup(ingress.value, "cidr_blocks", null)
+      ipv6_cidr_blocks = lookup(ingress.value, "ipv6_cidr_blocks", null)
+      security_groups  = lookup(ingress.value, "security_groups", null)
+      self             = lookup(ingress.value, "self", null)
     }
   }
 
   dynamic "egress" {
     for_each = var.security_group_egress_rules
     content {
-        description         = lookup(egress.value, "description", null)
-        from_port           = lookup(egress.value, "from_port", local.port)
-        to_port             = lookup(egress.value, "to_port", local.port)
-        protocol            = lookup(egress.value, "protocol", null)
-        cidr_blocks         = lookup(egress.value, "cidr_blocks", null)
-        ipv6_cidr_blocks    = lookup(egress.value, "ipv6_cidr_blocks", null)
-        security_groups     = lookup(egress.value, "security_groups", null)
-        self                = lookup(egress.value, "self", null)
+      description      = lookup(egress.value, "description", null)
+      from_port        = lookup(egress.value, "from_port", local.port)
+      to_port          = lookup(egress.value, "to_port", local.port)
+      protocol         = lookup(egress.value, "protocol", null)
+      cidr_blocks      = lookup(egress.value, "cidr_blocks", null)
+      ipv6_cidr_blocks = lookup(egress.value, "ipv6_cidr_blocks", null)
+      security_groups  = lookup(egress.value, "security_groups", null)
+      self             = lookup(egress.value, "self", null)
     }
   }
 
