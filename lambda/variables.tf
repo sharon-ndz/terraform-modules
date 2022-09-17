@@ -1,3 +1,19 @@
+variable "account" {
+  description = "Current AWS profile"
+}
+
+variable "env" {
+  type = string
+}
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+}
+
+variable "project" {
+}
+
 variable "lambda_name" {
   type = string
 }
