@@ -25,9 +25,6 @@ resource "aws_lambda_function" "default" {
   runtime          = var.runtime
   memory_size      = var.memsize
   publish          = var.publish
-  env              = var.env
-  project          = var.project
-  account          = var.account
 
   environment {
     variables = var.lambda_vars
