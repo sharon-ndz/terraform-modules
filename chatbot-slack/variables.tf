@@ -1,9 +1,18 @@
+variable "account" {
+  description = "Current AWS profile"
+}
+
 variable "env" {
   type = string
 }
 
 variable "project" {
   type = string
+}
+
+variable "region" {
+  type        = string
+  description = "AWS region"
 }
 
 variable "configuration_name" {
