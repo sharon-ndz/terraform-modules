@@ -3,7 +3,7 @@ data "aws_iam_role" "iam_role_check" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  count              = "${var.create_role} && ${data.aws_iam_role.iam_role_check == "null" ? 1 : 0}"
+  count              = var.create_role && data.aws_iam_role.iam_role_check == "null" ? 1 : 0
   name               = "${var.project}_lambda_role"
   assume_role_policy = <<POLICY
 {
