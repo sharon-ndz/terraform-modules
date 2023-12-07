@@ -3,7 +3,7 @@ data "aws_iam_role" "iam_role_check" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  count              = "${data.aws_iam_role.iam_role_check != "null" ? 0 : 1}"
+  count              = "${var.create_role} && ${data.aws_iam_role.iam_role_check == "null" ? 1 : 0}"
   name               = "${var.project}_lambda_role"
   assume_role_policy = <<POLICY
 {
@@ -25,7 +25,9 @@ resource "aws_lambda_function" "default" {
   function_name    = var.lambda_name
   filename         = var.filename
   source_code_hash = var.source_code_hash
-  role             = aws_iam_role.lambda_role[0].arn
+  lambda_role      = var.lambda_role
+  create_role      = var.create_role
+  role             = var.create_role ? aws_iam_role.lambda_role[0].arn : var.lambda_role
   handler          = var.lambda_handler
   runtime          = var.runtime
   memory_size      = var.memsize
