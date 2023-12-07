@@ -25,7 +25,7 @@ resource "aws_lambda_function" "default" {
   function_name    = var.lambda_name
   filename         = var.filename
   source_code_hash = var.source_code_hash
-  role             = aws_iam_role.lambda_role.arn
+  role             = aws_iam_role.lambda_role[count.index].arn
   handler          = var.lambda_handler
   runtime          = var.runtime
   memory_size      = var.memsize
