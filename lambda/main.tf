@@ -25,8 +25,6 @@ resource "aws_lambda_function" "default" {
   function_name    = var.lambda_name
   filename         = var.filename
   source_code_hash = var.source_code_hash
-  lambda_role      = var.lambda_role
-  create_role      = var.create_role
   role             = var.create_role ? aws_iam_role.lambda_role[0].arn : var.lambda_role
   handler          = var.lambda_handler
   runtime          = var.runtime
