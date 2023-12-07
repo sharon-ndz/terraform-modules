@@ -1,5 +1,10 @@
+data "aws_iam_role" "iam_role_check" {
+  name = "${var.project}_lambda_role"
+}
+
 resource "aws_iam_role" "lambda_role" {
-  name               = "${var.project}_lambda"
+  count              = "${data.aws_iam_role.iam_role_check != "null" ? 0 : 1}"
+  name               = "${var.project}_lambda_role"
   assume_role_policy = <<POLICY
 {
     "Version": "2012-10-17",
