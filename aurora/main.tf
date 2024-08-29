@@ -83,6 +83,13 @@ resource "aws_rds_cluster_parameter_group" "cluster_parameter_group" {
     name  = "time_zone"
     value = "US/Eastern"
   }
+
+  parameter {
+    # Sets the maximum number of concurrent connections.
+    name         = "max_connections"
+    value        = var.parameter_max_connections
+    apply_method = "immediate"
+  }
 }
 
 resource "aws_rds_cluster" "this" {
@@ -182,13 +189,6 @@ resource "aws_db_parameter_group" "db_parameter_group" {
   family      = "aurora-mysql5.7"
   description = "${var.db_parameter_group_name}-parameter-group"
   tags        = var.tags
-
-  parameter {
-    # Sets the maximum number of concurrent connections.
-    name         = "max_connections"
-    value        = var.parameter_max_connections
-    apply_method = "immediate"
-  }
 }
 
 resource "aws_rds_cluster_instance" "this" {
