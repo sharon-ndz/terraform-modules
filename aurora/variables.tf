@@ -210,6 +210,11 @@ variable "db_cluster_db_instance_parameter_group_name" {
   default     = null
 }
 
+variable "parameter_max_connections" {
+  type        = string
+  default     = "LEAST({DBInstanceClassMemory/9531392},5000)"
+}
+
 variable "iam_database_authentication_enabled" {
   description = "Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled"
   type        = bool
