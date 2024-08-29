@@ -212,7 +212,7 @@ variable "db_cluster_db_instance_parameter_group_name" {
 
 variable "parameter_max_connections" {
   type        = string
-  default     = "2700"
+  default     = 2700
 }
 
 variable "iam_database_authentication_enabled" {
