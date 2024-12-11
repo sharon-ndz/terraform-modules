@@ -70,12 +70,20 @@ variable "cloudwatch_insufficient_data_actions" {
   type = list(string)
 }
 
-variable "notify_slack" {
-  description = "The slack notification toggle. Set to 1 to enable."
+#variable "notify_slack" {
+#  description = "The slack notification toggle. Set to 1 to enable."
+#}
+#
+#variable "endpoint_slack" {
+#  description = "The slack notification endpoint"
+#}
+
+variable "notify_teams" {
+  description = "The Teams notification toggle. Set to 1 to enable."
 }
 
-variable "endpoint_slack" {
-  description = "The slack notification endpoint"
+variable "endpoint_teams" {
+  description = "The Teams notification email endpoint"
 }
 
 variable "notify_pagerduty_integration_key" {
