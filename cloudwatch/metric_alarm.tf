@@ -52,12 +52,23 @@ resource "aws_sns_topic" "metric-alarm-sns-topic" {
 ### SLACK ###
 
 # SLACK: Subscribe the to the sns topic with slack endpoint if enabled
-resource "aws_sns_topic_subscription" "subscription_slack" {
-  count = var.notify_slack != "" ? 1 : 0
+#resource "aws_sns_topic_subscription" "subscription_slack" {
+#  count = var.notify_slack != "" ? 1 : 0
+#
+#  topic_arn = aws_sns_topic.metric-alarm-sns-topic.arn
+#  protocol  = "email"
+#  endpoint  = var.endpoint_slack
+#}
+
+### TEAMS ###
+
+# TEAMS: Subscribe to the SNS topic with Teams endpoint if enabled
+resource "aws_sns_topic_subscription" "subscription_teams" {
+  count = var.notify_teams != "" ? 1 : 0
 
   topic_arn = aws_sns_topic.metric-alarm-sns-topic.arn
   protocol  = "email"
-  endpoint  = var.endpoint_slack
+  endpoint  = var.endpoint_teams
 }
 
 ### EMAIL ###
