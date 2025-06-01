@@ -1,2 +1,2 @@
 # tributetech-terraform-modules
-This repo hosts all Tribute Technologies infrastructure Terraform modules
+This repo hosts all BTL Technologies infrastructure Terraform modules
