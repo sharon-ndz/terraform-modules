@@ -23,11 +23,11 @@ resource "aws_lb" "this" {
  #   prefix  = "${var.environment}/nlb"
 #  }
   dynamic "access_logs" {
-    for_each = var.enable_access_logs ? [1] : []
-    content {
-    enabled = true
-    bucket  = var.access_logs_bucket
-    prefix  = var.access_logs_prefix
+        for_each = var.enable_access_logs ? [1] : []
+        content {
+      enabled = true
+      bucket  = var.access_logs_bucket
+      prefix  = var.access_logs_prefix
   }
 }
 
