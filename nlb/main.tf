@@ -17,11 +17,20 @@ resource "aws_lb" "this" {
     }
   }
 
-  access_logs {
+ # access_logs {
+   # enabled = true
+  #  bucket  = var.access_logs_bucket
+ #   prefix  = "${var.environment}/nlb"
+#  }
+dynamic "access_logs" {
+  for_each = var.enable_access_logs ? [1] : []
+  content {
     enabled = true
     bucket  = var.access_logs_bucket
-    prefix  = "${var.environment}/nlb"
+    prefix  = var.access_logs_prefix
   }
+}
+
 
   tags = merge(
     var.tags,
