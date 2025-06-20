@@ -98,13 +98,13 @@ variable "egress_roles" {
 
 variable "access_logs_bucket" {
   description = "S3 bucket name for storing NLB access logs"
-  type        = ""
+  type        = string
 }
 
 variable "access_logs_prefix" {
   description = "Prefix inside S3 bucket for NLB access logs"
   type        = string
-  default     = ""
+  default     = "Prefix within the S3 bucket for NLB access logs"
 }
 
 variable "environment" {
