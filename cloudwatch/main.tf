@@ -83,7 +83,8 @@ resource "aws_ssm_parameter" "docker_logs_config" {
               file_path       = var.docker_log_file_path,
               log_group_name  = var.docker_log_group_name,
               log_stream_name = var.log_stream_name,
-              timezone        = var.timezone
+              timezone        = var.timezone,
+              auto_create_group = false
             }
           ]
         }
