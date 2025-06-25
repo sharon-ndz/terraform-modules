@@ -74,12 +74,11 @@ resource "aws_api_gateway_integration" "proxy" {
   uri                     = "http://${var.nlb_dns_name}:4000/{proxy}"
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.this.id
-
   passthrough_behavior    = "WHEN_NO_MATCH"
   content_handling        = "CONVERT_TO_BINARY"
 
   request_templates = {
-    "application/json" = "" # dummy passthrough
+    "application/json" = ""
   }
 
   request_parameters = {
@@ -114,6 +113,10 @@ resource "aws_api_gateway_integration_response" "proxy" {
     "method.response.header.Access-Control-Allow-Methods" = "integration.response.header.Access-Control-Allow-Methods",
     "method.response.header.Access-Control-Allow-Headers" = "integration.response.header.Access-Control-Allow-Headers"
   }
+
+  depends_on = [
+    aws_api_gateway_integration.proxy
+  ]
 }
 
 resource "aws_api_gateway_deployment" "this" {
@@ -135,15 +138,15 @@ resource "aws_api_gateway_stage" "default" {
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_logs.arn
     format = jsonencode({
-      requestId      = "$context.requestId"
-      ip             = "$context.identity.sourceIp"
-      caller         = "$context.identity.caller"
-      user           = "$context.identity.user"
-      requestTime    = "$context.requestTime"
-      httpMethod     = "$context.httpMethod"
-      resourcePath   = "$context.resourcePath"
-      status         = "$context.status"
-      protocol       = "$context.protocol"
+      requestId      = "$context.requestId",
+      ip             = "$context.identity.sourceIp",
+      caller         = "$context.identity.caller",
+      user           = "$context.identity.user",
+      requestTime    = "$context.requestTime",
+      httpMethod     = "$context.httpMethod",
+      resourcePath   = "$context.resourcePath",
+      status         = "$context.status",
+      protocol       = "$context.protocol",
       responseLength = "$context.responseLength"
     })
   }
