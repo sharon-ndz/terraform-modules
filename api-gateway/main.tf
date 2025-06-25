@@ -100,6 +100,34 @@ resource "aws_api_gateway_integration" "proxy" {
   }
 }
 
+resource "aws_api_gateway_method_response" "proxy" {
+  for_each = toset(local.status_codes)
+
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy.http_method
+  status_code = each.key
+
+  response_parameters = {
+    "method.response.header.Content-Type" = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "proxy" {
+  for_each = toset(local.status_codes)
+
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy.http_method
+  status_code = each.key
+
+  response_parameters = {
+    "method.response.header.Content-Type" = "integration.response.header.Content-Type"
+  }
+}
+
+
+
 
 
 #resource "aws_api_gateway_method_response" "proxy_200" {
