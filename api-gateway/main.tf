@@ -20,7 +20,10 @@ resource "aws_iam_role_policy_attachment" "api_gw_logs" {
 
 resource "aws_api_gateway_account" "account" {
   cloudwatch_role_arn = aws_iam_role.api_gw_cloudwatch.arn
-  depends_on = [aws_iam_role_policy_attachment.api_gw_logs]
+
+  depends_on = [
+    aws_iam_role_policy_attachment.api_gw_logs
+  ]
 }
 
 resource "aws_cloudwatch_log_group" "api_logs" {
@@ -62,22 +65,6 @@ resource "aws_api_gateway_method" "proxy" {
   }
 }
 
-#resource "aws_api_gateway_integration" "proxy" {
-#  rest_api_id             = aws_api_gateway_rest_api.this.id
-#  resource_id             = aws_api_gateway_resource.proxy.id
-#  http_method             = aws_api_gateway_method.proxy.http_method
-#  integration_http_method = "ANY"
-#  type                    = "HTTP"
-#  uri                     = "http://${var.nlb_dns_name}:4000/{proxy}"
-#  connection_type         = "VPC_LINK"
-#  connection_id           = aws_api_gateway_vpc_link.this.id
-#  passthrough_behavior    = "WHEN_NO_TEMPLATES"
-#  content_handling        = "CONVERT_TO_BINARY"
-#
-#  request_parameters = {
-#    "integration.request.path.proxy" = "method.request.path.proxy"
-#  }
-#}
 resource "aws_api_gateway_integration" "proxy" {
   rest_api_id             = aws_api_gateway_rest_api.this.id
   resource_id             = aws_api_gateway_resource.proxy.id
@@ -88,11 +75,11 @@ resource "aws_api_gateway_integration" "proxy" {
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.this.id
 
-  passthrough_behavior    = "WHEN_NO_MATCH" # <- lets unmatched content types pass as-is
+  passthrough_behavior    = "WHEN_NO_MATCH"
   content_handling        = "CONVERT_TO_BINARY"
 
   request_templates = {
-    "application/json" = ""  # dummy passthrough
+    "application/json" = "" # dummy passthrough
   }
 
   request_parameters = {
@@ -121,23 +108,13 @@ resource "aws_api_gateway_integration_response" "proxy" {
   http_method = aws_api_gateway_method.proxy.http_method
   status_code = each.key
 
-  
- response_parameters = {
-    "method.response.header.Content-Type"                 = "integration.response.header.Content-Type"
-     "method.response.header.Access-Control-Allow-Origin"  = "integration.response.header.Access-Control-Allow-Origin"
-    "method.response.header.Access-Control-Allow-Methods" = "integration.response.header.Access-Control-Allow-Methods"
-     "method.response.header.Access-Control-Allow-Headers" = "integration.response.header.Access-Control-Allow-Headers"
-   }
+  response_parameters = {
+    "method.response.header.Content-Type"                 = "integration.response.header.Content-Type",
+    "method.response.header.Access-Control-Allow-Origin"  = "integration.response.header.Access-Control-Allow-Origin",
+    "method.response.header.Access-Control-Allow-Methods" = "integration.response.header.Access-Control-Allow-Methods",
+    "method.response.header.Access-Control-Allow-Headers" = "integration.response.header.Access-Control-Allow-Headers"
+  }
 }
-
-
-
-  depends_on = [
-    aws_api_gateway_integration.proxy,
-    aws_api_gateway_integration_response.default
- #   aws_api_gateway_method_response.proxy_200
-  ]
-
 
 resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.this.id
@@ -145,8 +122,8 @@ resource "aws_api_gateway_deployment" "this" {
 
   depends_on = [
     aws_api_gateway_integration.proxy,
-    aws_api_gateway_method_response.proxy
-    aws_api_gateway_integration_response.proxy_200
+    aws_api_gateway_method_response.proxy,
+    aws_api_gateway_integration_response.proxy
   ]
 }
 
