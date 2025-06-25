@@ -79,18 +79,25 @@ resource "aws_api_gateway_integration" "proxy" {
   }
 }
 
-resource "aws_api_gateway_method_response" "proxy_200" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = aws_api_gateway_method.proxy.http_method
-  status_code = "200"
+#resource "aws_api_gateway_method_response" "proxy_200" {
+ # rest_api_id = aws_api_gateway_rest_api.this.id
+  #resource_id = aws_api_gateway_resource.proxy.id
+ # http_method = aws_api_gateway_method.proxy.http_method
+ # status_code = "200"
 
-  response_parameters = {
-    "method.response.header.Content-Type"                 = true
-    "method.response.header.Access-Control-Allow-Origin"  = true
-    "method.response.header.Access-Control-Allow-Methods" = true
-    "method.response.header.Access-Control-Allow-Headers" = true
-  }
+  #response_parameters = {
+   # "method.response.header.Content-Type"                 = true
+   # "method.response.header.Access-Control-Allow-Origin"  = true
+   # "method.response.header.Access-Control-Allow-Methods" = true
+   # "method.response.header.Access-Control-Allow-Headers" = true
+  #}
+#}
+resource "aws_api_gateway_integration_response" "default" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.this.id
+  http_method = aws_api_gateway_method.this.http_method
+  status_code = aws_api_gateway_method_response.default.status_code
+  # NO response_templates here — empty, so no transformation!
 }
 
 resource "aws_api_gateway_integration_response" "proxy_200" {
