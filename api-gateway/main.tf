@@ -1,4 +1,4 @@
-# === IAM Role for API Gateway Logging ===
+# IAM role for API Gateway to push logs to CloudWatch
 resource "aws_iam_role" "api_gw_cloudwatch" {
   name = "${var.environment}-apigw-cloudwatch-role"
 
@@ -21,23 +21,22 @@ resource "aws_iam_role_policy_attachment" "api_gw_logs" {
 
 resource "aws_api_gateway_account" "account" {
   cloudwatch_role_arn = aws_iam_role.api_gw_cloudwatch.arn
-
-  depends_on = [aws_iam_role_policy_attachment.api_gw_logs]
+  depends_on          = [aws_iam_role_policy_attachment.api_gw_logs]
 }
 
-# === CloudWatch Log Group ===
+# CloudWatch log group for API Gateway
 resource "aws_cloudwatch_log_group" "api_logs" {
   name              = "/aws/api-gateway/${var.environment}-api"
   retention_in_days = var.log_retention_days
 }
 
-# === VPC Link to NLB ===
+# VPC link to private NLB
 resource "aws_api_gateway_vpc_link" "this" {
   name        = "${var.environment}-vpc-link"
   target_arns = [var.vpc_link_arn]
 }
 
-# === REST API ===
+# REST API definition
 resource "aws_api_gateway_rest_api" "this" {
   name        = "${var.environment}-rest-api"
   description = "REST API to NLB on port 4000 — ${timestamp()}"
@@ -49,27 +48,27 @@ resource "aws_api_gateway_rest_api" "this" {
   binary_media_types = ["*/*"]
 }
 
-# === Resource for {proxy+} ===
+# Define the proxy resource
 resource "aws_api_gateway_resource" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.this.id
   parent_id   = aws_api_gateway_rest_api.this.root_resource_id
   path_part   = "{proxy+}"
 }
 
-# === Method on {proxy+} ===
+# Method on the proxy resource
 resource "aws_api_gateway_method" "proxy" {
-  rest_api_id        = aws_api_gateway_rest_api.this.id
-  resource_id        = aws_api_gateway_resource.proxy.id
-  http_method        = "ANY"
-  authorization      = "NONE"
-  api_key_required   = false
+  rest_api_id      = aws_api_gateway_rest_api.this.id
+  resource_id      = aws_api_gateway_resource.proxy.id
+  http_method      = "ANY"
+  authorization    = "NONE"
+  api_key_required = false
 
   request_parameters = {
     "method.request.path.proxy" = true
   }
 }
 
-# === Integration with NLB ===
+# Integration with internal NLB
 resource "aws_api_gateway_integration" "proxy" {
   rest_api_id             = aws_api_gateway_rest_api.this.id
   resource_id             = aws_api_gateway_resource.proxy.id
@@ -91,7 +90,7 @@ resource "aws_api_gateway_integration" "proxy" {
   }
 }
 
-# === Method Responses (for all status codes) ===
+# Define method responses
 resource "aws_api_gateway_method_response" "proxy" {
   for_each = toset(local.status_codes)
 
@@ -108,7 +107,7 @@ resource "aws_api_gateway_method_response" "proxy" {
   }
 }
 
-# === Integration Responses (for all status codes) ===
+# Define integration responses with correct header mapping
 resource "aws_api_gateway_integration_response" "proxy" {
   for_each = toset(local.status_codes)
 
@@ -127,7 +126,7 @@ resource "aws_api_gateway_integration_response" "proxy" {
   depends_on = [aws_api_gateway_integration.proxy]
 }
 
-# === Deployment ===
+# Deployment block
 resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.this.id
   description = "Deployed on ${timestamp()}"
@@ -139,7 +138,7 @@ resource "aws_api_gateway_deployment" "this" {
   ]
 }
 
-# === Stage ===
+# Stage setup with CloudWatch logs
 resource "aws_api_gateway_stage" "default" {
   stage_name    = "default"
   rest_api_id   = aws_api_gateway_rest_api.this.id
@@ -166,3 +165,4 @@ resource "aws_api_gateway_stage" "default" {
     aws_api_gateway_account.account
   ]
 }
+
