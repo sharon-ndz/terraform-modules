@@ -1,4 +1,4 @@
-# ========== IAM ROLE FOR CLOUDWATCH LOGGING ==========
+# IAM role to allow API Gateway to write to CloudWatch Logs
 resource "aws_iam_role" "api_gw_cloudwatch" {
   name = "${var.environment}-apigw-cloudwatch-role"
 
@@ -24,19 +24,19 @@ resource "aws_api_gateway_account" "account" {
   depends_on          = [aws_iam_role_policy_attachment.api_gw_logs]
 }
 
-# ========== CLOUDWATCH LOG GROUP ==========
+# CloudWatch log group
 resource "aws_cloudwatch_log_group" "api_logs" {
   name              = "/aws/api-gateway/${var.environment}-api"
   retention_in_days = var.log_retention_days
 }
 
-# ========== VPC LINK TO NLB ==========
+# VPC Link to private NLB
 resource "aws_api_gateway_vpc_link" "this" {
   name        = "${var.environment}-vpc-link"
   target_arns = [var.vpc_link_arn]
 }
 
-# ========== REST API ==========
+# API Gateway REST API
 resource "aws_api_gateway_rest_api" "this" {
   name        = "${var.environment}-rest-api"
   description = "REST API to NLB on port 4000 — ${timestamp()}"
@@ -48,14 +48,14 @@ resource "aws_api_gateway_rest_api" "this" {
   binary_media_types = ["*/*"]
 }
 
-# ========== PROXY RESOURCE ==========
+# {proxy+} resource
 resource "aws_api_gateway_resource" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.this.id
   parent_id   = aws_api_gateway_rest_api.this.root_resource_id
   path_part   = "{proxy+}"
 }
 
-# ========== METHOD ==========
+# ANY method for {proxy+}
 resource "aws_api_gateway_method" "proxy" {
   rest_api_id      = aws_api_gateway_rest_api.this.id
   resource_id      = aws_api_gateway_resource.proxy.id
@@ -68,7 +68,7 @@ resource "aws_api_gateway_method" "proxy" {
   }
 }
 
-# ========== INTEGRATION TO NLB ==========
+# Integration to NLB via VPC Link
 resource "aws_api_gateway_integration" "proxy" {
   rest_api_id             = aws_api_gateway_rest_api.this.id
   resource_id             = aws_api_gateway_resource.proxy.id
@@ -90,7 +90,7 @@ resource "aws_api_gateway_integration" "proxy" {
   }
 }
 
-# ========== METHOD RESPONSES ==========
+# Method response for each status code
 resource "aws_api_gateway_method_response" "proxy" {
   for_each = toset(local.status_codes)
 
@@ -107,7 +107,7 @@ resource "aws_api_gateway_method_response" "proxy" {
   }
 }
 
-# ========== INTEGRATION RESPONSES ==========
+# Integration response for each status code
 resource "aws_api_gateway_integration_response" "proxy" {
   for_each = toset(local.status_codes)
 
@@ -116,8 +116,15 @@ resource "aws_api_gateway_integration_response" "proxy" {
   http_method = aws_api_gateway_method.proxy.http_method
   status_code = each.key
 
-  # Only 200 is default, others must specify selection_pattern
-  selection_pattern = each.key == "200" ? null : ".*"
+  # Only 200 is default; others have specific patterns
+  selection_pattern = (
+    each.key == "200" ? null :
+    each.key == "400" ? "400" :
+    each.key == "403" ? "403" :
+    each.key == "404" ? "404" :
+    each.key == "500" ? "5\\d{2}" :
+    null
+  )
 
   response_parameters = {
     "method.response.header.Content-Type"                 = "integration.response.header.Content-Type",
@@ -129,7 +136,7 @@ resource "aws_api_gateway_integration_response" "proxy" {
   depends_on = [aws_api_gateway_integration.proxy]
 }
 
-# ========== DEPLOYMENT ==========
+# Deployment
 resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.this.id
   description = "Deployed on ${timestamp()}"
@@ -141,7 +148,7 @@ resource "aws_api_gateway_deployment" "this" {
   ]
 }
 
-# ========== STAGE WITH LOGGING ==========
+# Stage with access logging
 resource "aws_api_gateway_stage" "default" {
   stage_name    = "default"
   rest_api_id   = aws_api_gateway_rest_api.this.id
