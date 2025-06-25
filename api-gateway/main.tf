@@ -137,7 +137,7 @@ resource "aws_api_gateway_integration_response" "proxy" {
     aws_api_gateway_integration_response.default
  #   aws_api_gateway_method_response.proxy_200
   ]
-}
+
 
 resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.this.id
