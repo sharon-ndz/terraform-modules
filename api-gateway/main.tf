@@ -143,11 +143,11 @@ resource "aws_api_gateway_integration_response" "proxy" {
    # "method.response.header.Access-Control-Allow-Headers" = true
   #}
 #}
-resource "aws_api_gateway_integration_response" "default" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_resource.this.id
-  http_method = aws_api_gateway_method.this.http_method
-  status_code = aws_api_gateway_method_response.default.status_code
+#resource "aws_api_gateway_integration_response" "default" {
+ # rest_api_id = aws_api_gateway_rest_api.this.id
+  #resource_id = aws_api_gateway_resource.this.id
+  #http_method = aws_api_gateway_method.this.http_method
+  #status_code = aws_api_gateway_method_response.default.status_code
   # NO response_templates here — empty, so no transformation!
 #}
 
@@ -177,7 +177,7 @@ resource "aws_api_gateway_deployment" "this" {
 
   depends_on = [
     aws_api_gateway_integration.proxy,
-    aws_api_gateway_method_response.proxy_200,
+    aws_api_gateway_method_response.proxy
     aws_api_gateway_integration_response.proxy_200
   ]
 }
