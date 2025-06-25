@@ -62,6 +62,22 @@ resource "aws_api_gateway_method" "proxy" {
   }
 }
 
+#resource "aws_api_gateway_integration" "proxy" {
+#  rest_api_id             = aws_api_gateway_rest_api.this.id
+#  resource_id             = aws_api_gateway_resource.proxy.id
+#  http_method             = aws_api_gateway_method.proxy.http_method
+#  integration_http_method = "ANY"
+#  type                    = "HTTP"
+#  uri                     = "http://${var.nlb_dns_name}:4000/{proxy}"
+#  connection_type         = "VPC_LINK"
+#  connection_id           = aws_api_gateway_vpc_link.this.id
+#  passthrough_behavior    = "WHEN_NO_TEMPLATES"
+#  content_handling        = "CONVERT_TO_BINARY"
+#
+#  request_parameters = {
+#    "integration.request.path.proxy" = "method.request.path.proxy"
+#  }
+#}
 resource "aws_api_gateway_integration" "proxy" {
   rest_api_id             = aws_api_gateway_rest_api.this.id
   resource_id             = aws_api_gateway_resource.proxy.id
@@ -71,13 +87,20 @@ resource "aws_api_gateway_integration" "proxy" {
   uri                     = "http://${var.nlb_dns_name}:4000/{proxy}"
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.this.id
-  passthrough_behavior    = "WHEN_NO_TEMPLATES"
+
+  passthrough_behavior    = "WHEN_NO_MATCH" # <- lets unmatched content types pass as-is
   content_handling        = "CONVERT_TO_BINARY"
+
+  request_templates = {
+    "application/json" = ""  # dummy passthrough
+  }
 
   request_parameters = {
     "integration.request.path.proxy" = "method.request.path.proxy"
   }
 }
+
+
 
 #resource "aws_api_gateway_method_response" "proxy_200" {
  # rest_api_id = aws_api_gateway_rest_api.this.id
